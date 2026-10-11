@@ -38,6 +38,29 @@
                 </div>
 
                 <div class="control-section">
+                    <h3 class="section-header" data-section="xaxis">
+                        <span class="toggle-icon collapsed">▼</span>
+                        X-Axis Units
+                    </h3>
+                    <div class="section-content collapsed" id="xaxis-content">
+                        <div class="radio-group">
+                            <label class="radio-item">
+                                <input type="radio" name="xaxis" value="auto" checked>
+                                <span>Baryon (else DM)</span>
+                            </label>
+                            <label class="radio-item">
+                                <input type="radio" name="xaxis" value="baryon">
+                                <span>Baryon</span>
+                            </label>
+                            <label class="radio-item">
+                                <input type="radio" name="xaxis" value="dm">
+                                <span>Dark Matter</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="control-section">
                     <h3 class="section-header" data-section="yaxis">
                         <span class="toggle-icon collapsed">▼</span>
                         Y-Axis Units
@@ -134,14 +157,14 @@
                     </h3>
                     <div class="section-content collapsed" id="pubyear-content">
                         <div class="year-range-display">
-                            <span id="year-min-value">1990</span> – <span id="year-max-value">2026</span>
+                            <span id="year-min-value">1980</span> – <span id="year-max-value">2026</span>
                         </div>
                         <div class="dual-range-wrapper">
                             <div class="dual-range-track">
                                 <div class="dual-range-fill" id="year-fill"></div>
                             </div>
-                            <input type="range" class="dual-range" id="year-min" min="1990" max="2026" step="1" value="1990">
-                            <input type="range" class="dual-range" id="year-max" min="1990" max="2026" step="1" value="2026">
+                            <input type="range" class="dual-range" id="year-min" min="1980" max="2026" step="1" value="1980">
+                            <input type="range" class="dual-range" id="year-max" min="1980" max="2026" step="1" value="2026">
                         </div>
                         <div class="year-controls">
                             <button id="year-play" class="year-btn">▶</button>
@@ -186,6 +209,10 @@
                             <label class="checkbox-item">
                                 <input type="checkbox" id="show-effective-volume">
                                 <span>Show Effective Volume</span>
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" id="show-combined-volume">
+                                <span>Show Combined Volume</span>
                             </label>
                             <label class="checkbox-item">
                                 <input type="checkbox" id="dark-chart">

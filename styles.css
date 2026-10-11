@@ -452,6 +452,15 @@ svg {
     color: var(--chart-text);
 }
 
+.legend-family {
+    font-weight: 600;
+    font-size: 9px;
+    color: var(--chart-text-muted);
+    margin-top: 4px;
+    margin-bottom: 1px;
+    padding-left: 1px;
+}
+
 .point-label {
     font-size: 9px;
     font-weight: 600;

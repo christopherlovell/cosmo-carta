@@ -31,8 +31,13 @@ function dVdzdOmega(z) {
 }
 
 // Return the resolution element mass regardless of sim type (baryonic or DM)
+let currentXMode = 'auto';
+
 function getResolutionMass(sim) {
-    return sim.m_g !== undefined ? sim.m_g : sim.m_dm;
+    if (currentXMode === 'baryon') return sim.m_g;
+    if (currentXMode === 'dm') return sim.m_dm;
+    // auto: baryon if available, else DM
+    return sim.m_g ? sim.m_g : sim.m_dm;
 }
 
 // Calculate stellar mass upper limit from resolution
@@ -80,8 +85,8 @@ const clipRect = svg.append('defs').append('clipPath').attr('id', 'plot-clip')
     .append('rect').attr('x', 0).attr('y', 0);
 
 // Scales (ranges set in resizeChart)
-const xScale = d3.scaleLinear().domain([12.2, 3.8]);
-const yScale = d3.scaleLinear().domain([2.5, 12]);
+const xScale = d3.scaleLinear().domain([14, 3.8]);
+const yScale = d3.scaleLinear().domain([1, 12]);
 
 // Tooltip
 const tooltip = d3.select('.tooltip');
@@ -99,7 +104,18 @@ const xLabel = g.append('text')
     .attr('class', 'chart-label')
     .attr('text-anchor', 'middle')
     .style('font-size', '17px')
-    .html('log<tspan dy="5" font-size="11px">10</tspan><tspan dy="-5">(baryonic / dark matter resolution element mass / </tspan><tspan font-style="italic">M</tspan><tspan dy="5" font-size="11px">⊙</tspan><tspan dy="-5">)</tspan>');
+    .attr('class', 'chart-label x-axis-label');
+
+function updateXLabel() {
+    const labels = {
+        auto: 'baryonic / dark matter',
+        baryon: 'baryonic',
+        dm: 'dark matter'
+    };
+    const desc = labels[currentXMode] || labels.auto;
+    xLabel.html('log<tspan dy="5" font-size="11px">10</tspan><tspan dy="-5">(' + desc + ' resolution element mass / </tspan><tspan font-style="italic">M</tspan><tspan dy="5" font-size="11px">⊙</tspan><tspan dy="-5">)</tspan>');
+}
+updateXLabel();
 
 const yLabel = g.append('text')
     .attr('class', 'chart-label')
@@ -111,7 +127,7 @@ const yLabel = g.append('text')
 
 // Top axis for stellar mass (range set in resizeChart)
 const xScaleTop = d3.scaleLinear()
-    .domain([calcStellarMassLimit(Math.pow(10, 12.2)), calcStellarMassLimit(Math.pow(10, 3.8))]);
+    .domain([calcStellarMassLimit(Math.pow(10, 14)), calcStellarMassLimit(Math.pow(10, 3.8))]);
 
 const xAxisTop = d3.axisTop(xScaleTop).ticks(6);
 const xAxisTopG = g.append('g').attr('class', 'axis');
@@ -148,8 +164,8 @@ const yearDisplayText = g.append('text')
     .style('opacity', 0);
 
 // ── Box-select zoom ──────────────────────────────────────────────
-const DEFAULT_X_DOMAIN = [12.2, 3.8];
-const DEFAULT_Y_DOMAIN = [2.5, 12];
+const DEFAULT_X_DOMAIN = [14, 3.8];
+const DEFAULT_Y_DOMAIN = [1, 12];
 let isZoomed = false;
 let dragState = null;
 
@@ -249,7 +265,7 @@ function getCodeEmoji(simName) {
     return sim && sim.code ? (codeEmoji[sim.code] || null) : null;
 }
 
-const YEAR_MIN = 1990;
+const YEAR_MIN = 1980;
 const YEAR_MAX = new Date().getFullYear();
 
 let currentYMode = 'volume';
@@ -385,12 +401,13 @@ function buildTooltipHTML(d, includeLink) {
     const volume = Math.pow(sim.size, 3);
     let html = `<strong>${name}</strong><br>`;
     html += `Type: ${sim.dmo ? 'Dark Matter Only' : 'Hydrodynamic'}<br>`;
-    const massLabel = sim.dmo ? 'DM particle mass' : 'Baryonic mass';
-    html += `${massLabel}: ${getResolutionMass(sim).toExponential(2)} M☉<br>`;
+    if (sim.m_g !== undefined) html += `Baryon mass: ${sim.m_g.toExponential(2)} M☉<br>`;
+    if (sim.m_dm !== undefined) html += `DM mass: ${sim.m_dm.toExponential(2)} M☉<br>`;
     html += `Box size: ${sim.size.toFixed(1)} cMpc<br>`;
     html += `Volume: ${volume.toExponential(2)} cMpc³<br>`;
     if (sim.mhd) html += `MHD: Yes<br>`;
     if (sim['radiative-transfer']) html += `Radiative Transfer: Yes<br>`;
+    if (sim.dust) html += `Live dust model: Yes<br>`;
     html += `Redshift end: z=${sim.redshift_end}<br>`;
     if (sim.year !== undefined) html += `Published: ${sim.year}`;
     if (includeLink && sim.ads) html += `<br><a href="${sim.ads}" target="_blank" class="tooltip-link">View paper ↗</a>`;
@@ -437,7 +454,16 @@ function updateYAxis(mode) {
     }
 
     if (mode === 'volume') {
-        yScale.domain([2.5, 12]);
+        const combVol = document.getElementById('show-combined-volume').checked;
+        if (combVol) {
+            const yValues = Object.values(simulations)
+                .map(sim => getYValue(sim))
+                .filter(v => isFinite(v));
+            const maxY = Math.max(...yValues, 12);
+            yScale.domain([1, maxY + 0.3]);
+        } else {
+            yScale.domain([1, 12]);
+        }
         yLabel.html('log<tspan dy="5" font-size="11px">10</tspan><tspan dy="-5">(volume / cMpc</tspan><tspan dy="-6" font-size="11px">3</tspan><tspan dy="6">)</tspan>');
     } else {
         yScale.domain(calcAreaDomain());
@@ -458,13 +484,31 @@ function updateRedshiftParams() {
 }
 
 function getYValue(sim) {
-    const volume = Math.pow(sim.size, 3);
-    
+    const showEffVol = document.getElementById('show-effective-volume').checked;
+    const showCombVol = document.getElementById('show-combined-volume').checked;
+    let volume;
+    if (showEffVol && sim.effective_volume != null) {
+        volume = Math.pow(sim.effective_volume, 3);
+    } else if (showCombVol && sim.n_sims != null) {
+        volume = Math.pow(sim.size, 3) * sim.n_sims;
+    } else {
+        volume = Math.pow(sim.size, 3);
+    }
+
     if (currentYMode === 'volume') {
         return Math.log10(volume);
     } else {
         const area = volumeToArea(volume, currentRedshift, currentDeltaZ);
         return Math.log10(area);
+    }
+}
+
+function getSizeYValue(sim) {
+    const volume = Math.pow(sim.size, 3);
+    if (currentYMode === 'volume') {
+        return Math.log10(volume);
+    } else {
+        return Math.log10(volumeToArea(volume, currentRedshift, currentDeltaZ));
     }
 }
 
@@ -505,8 +549,7 @@ function renderParticleLines() {
     if (currentYMode !== 'volume') return;
 
     const [yMin, yMax] = yScale.domain();
-    const xMin = 3.8;   // right edge of plot (low mass)
-    const xMax = 12.2;  // left  edge of plot (high mass)
+    const [xMax, xMin] = xScale.domain();  // left edge (high mass), right edge (low mass)
 
     for (let logN = 6; logN <= 13; logN++) {
         const c = logN - LOG_RHO_M; // log10(V) = log10(m) + c
@@ -569,6 +612,7 @@ function render() {
     const showEmojis = document.getElementById('show-emojis').checked;
     const showCodeEmojis = document.getElementById('show-code-emojis').checked;
     const showEffectiveVolume = document.getElementById('show-effective-volume').checked;
+    const showCombinedVolume = document.getElementById('show-combined-volume').checked;
 
     const activeEmoji = name => {
         if (showCodeEmojis) { const ce = getCodeEmoji(name); if (ce) return ce; }
@@ -596,6 +640,10 @@ function render() {
         if (!filterHydro && !sim.dmo) return false;
         if (!filterDMO && sim.dmo) return false;
         if (!filterMHD && sim.mhd) return false;
+
+        // Check x-axis mass availability
+        if (currentXMode === 'baryon' && sim.m_g === undefined) return false;
+        if (currentXMode === 'dm' && sim.m_dm === undefined) return false;
 
         // Check final redshift filter
         if (sim.redshift_end > currentMaxRedshiftEnd) return false;
@@ -668,44 +716,28 @@ function render() {
         const effVolSims = filteredSims.filter(([, sim]) => sim.effective_volume != null);
         effVolSims.forEach(([name, sim]) => {
             const x = xScale(Math.log10(getResolutionMass(sim)));
-            const ySizeVol = Math.pow(sim.size, 3);
-            const yEffVol = Math.pow(sim.effective_volume, 3);
-
-            let y1, y2;
-            if (currentYMode === 'volume') {
-                y1 = yScale(Math.log10(ySizeVol));
-                y2 = yScale(Math.log10(yEffVol));
-            } else {
-                y1 = yScale(Math.log10(volumeToArea(ySizeVol, currentRedshift, currentDeltaZ)));
-                y2 = yScale(Math.log10(volumeToArea(yEffVol, currentRedshift, currentDeltaZ)));
-            }
-
+            const ySize = yScale(getSizeYValue(sim));
+            const yEff = yScale(getYValue(sim));
             const color = simColor(sim);
 
-            // Line connecting the two volumes
+            // Dashed line from box size to effective volume
             effVolGroup.append('line')
-                .attr('x1', x).attr('y1', y1)
-                .attr('x2', x).attr('y2', y2)
+                .attr('x1', x).attr('y1', ySize)
+                .attr('x2', x).attr('y2', yEff)
                 .attr('stroke', color)
                 .attr('stroke-width', 2)
                 .attr('stroke-dasharray', '4,3')
                 .attr('opacity', 0.7);
 
-            // Endpoint at effective volume
+            // Dot at the box size end
             effVolGroup.append('circle')
-                .attr('cx', x).attr('cy', y2)
+                .attr('cx', x).attr('cy', ySize)
                 .attr('r', 4)
                 .attr('fill', color)
                 .attr('opacity', 0.7);
-
-            // Small dot at the size end (the main point is already there)
-            effVolGroup.append('circle')
-                .attr('cx', x).attr('cy', y1)
-                .attr('r', 3)
-                .attr('fill', color)
-                .attr('opacity', 0.5);
         });
     }
+
 
     // Render simulations
     const points = simGroup.selectAll('.sim-point')
@@ -777,6 +809,16 @@ function render() {
         .attr('x', -10).attr('y', -10)
         .attr('width', 20).attr('height', 20);
 
+    // Dust satellites – 5 small circles in the gaps of the 5-pointed RT star
+    for (let i = 0; i < 5; i++) {
+        const angle = -Math.PI / 2 + Math.PI / 5 + i * 2 * Math.PI / 5;
+        pointsEnter.append('circle')
+            .attr('class', 'dust-satellite')
+            .attr('cx', 7 * Math.cos(angle))
+            .attr('cy', 7 * Math.sin(angle))
+            .attr('r', 2);
+    }
+
     pointsEnter.append('text')
         .attr('class', 'point-label');
 
@@ -835,6 +877,10 @@ function render() {
     allPoints.select('.main-circle')
         .attr('fill', d => simColor(d[1]))
         .attr('opacity', d => emojiActive(d) ? 0 : (d[1].complete ? 1 : 0.3));
+
+    allPoints.selectAll('.dust-satellite')
+        .attr('fill', d => simColor(d[1]))
+        .attr('opacity', d => emojiActive(d) ? 0 : (d[1].dust ? (d[1].complete ? 1 : 0.3) : 0));
 
     allPoints.select('.rt-ring')
         .attr('opacity', 0);
@@ -1021,49 +1067,78 @@ function render() {
             })
             : filteredSims;
 
+        // Group legendSims by family
+        const familyGroups = new Map();
         legendSims.forEach(([name, sim]) => {
-            const num = simNumberMap.get(name);
-            const isActive = stickyData && stickyData[0] === name;
-            const entry = legendDiv.append('div')
-                .attr('class', isActive ? 'legend-entry legend-entry-active' : 'legend-entry');
+            const family = simToFamily[name] || name;
+            if (!familyGroups.has(family)) familyGroups.set(family, []);
+            familyGroups.get(family).push([name, sim]);
+        });
 
-            entry.append('span')
-                .attr('class', 'legend-number')
-                .text(`${num}.`);
+        // Sort families by newest sim year (descending), but pin individual groups to the bottom
+        const individualFamilies = new Set(['Individual Hydrodynamical Simulations', 'Individual DMO Simulations']);
+        const sortedFamilies = [...familyGroups.entries()].sort((a, b) => {
+            const aIndiv = individualFamilies.has(a[0]) ? 1 : 0;
+            const bIndiv = individualFamilies.has(b[0]) ? 1 : 0;
+            if (aIndiv !== bIndiv) return aIndiv - bIndiv;
+            const maxYearA = Math.max(...a[1].map(([, s]) => s.year || 0));
+            const maxYearB = Math.max(...b[1].map(([, s]) => s.year || 0));
+            return maxYearB - maxYearA;
+        });
 
-            entry.append('span')
-                .attr('class', 'legend-name')
-                .text(name);
+        // Flat list for index-based active class updates
+        const legendSimsFlat = [];
 
-            entry.on('click', function(event) {
-                event.stopPropagation();
-                const d = filteredSims.find(([n]) => n === name);
-                const pts = simGroup.selectAll('.sim-point');
-                if (stickyData && stickyData[0] === d[0]) {
-                    stickyData = null;
-                    tooltip.classed('visible', false).classed('sticky', false)
-                        .style('pointer-events', 'none');
-                    pts.transition().duration(200)
-                        .attr('transform', p => `translate(${xScale(Math.log10(getResolutionMass(p[1])))},${yScale(getYValue(p[1]))}) scale(1)`);
-                } else {
-                    stickyData = d;
-                    pts.filter(p => p[0] !== stickyData[0]).transition().duration(200)
-                        .attr('transform', p => `translate(${xScale(Math.log10(getResolutionMass(p[1])))},${yScale(getYValue(p[1]))}) scale(1)`);
-                    pts.filter(p => p[0] === stickyData[0]).transition().duration(200)
-                        .attr('transform', p => `translate(${xScale(Math.log10(getResolutionMass(p[1])))},${yScale(getYValue(p[1]))}) scale(1.5)`);
-                    tooltip.html(buildTooltipHTML(d, true))
-                        .classed('visible', true).classed('sticky', true)
-                        .style('pointer-events', 'auto');
-                    const svgRect = svg.node().getBoundingClientRect();
-                    positionTooltip({
-                        pageX: svgRect.left + margin.left + xScale(Math.log10(getResolutionMass(d[1]))) + window.scrollX,
-                        pageY: svgRect.top + margin.top + yScale(getYValue(d[1])) + window.scrollY,
+        sortedFamilies.forEach(([family, sims]) => {
+            legendDiv.append('div')
+                .attr('class', 'legend-family')
+                .text(family);
+
+            sims.forEach(([name, sim]) => {
+                legendSimsFlat.push([name, sim]);
+                const num = simNumberMap.get(name);
+                const isActive = stickyData && stickyData[0] === name;
+                const entry = legendDiv.append('div')
+                    .attr('class', isActive ? 'legend-entry legend-entry-active' : 'legend-entry');
+
+                entry.append('span')
+                    .attr('class', 'legend-number')
+                    .text(`${num}.`);
+
+                entry.append('span')
+                    .attr('class', 'legend-name')
+                    .text(name);
+
+                entry.on('click', function(event) {
+                    event.stopPropagation();
+                    const d = filteredSims.find(([n]) => n === name);
+                    const pts = simGroup.selectAll('.sim-point');
+                    if (stickyData && stickyData[0] === d[0]) {
+                        stickyData = null;
+                        tooltip.classed('visible', false).classed('sticky', false)
+                            .style('pointer-events', 'none');
+                        pts.transition().duration(200)
+                            .attr('transform', p => `translate(${xScale(Math.log10(getResolutionMass(p[1])))},${yScale(getYValue(p[1]))}) scale(1)`);
+                    } else {
+                        stickyData = d;
+                        pts.filter(p => p[0] !== stickyData[0]).transition().duration(200)
+                            .attr('transform', p => `translate(${xScale(Math.log10(getResolutionMass(p[1])))},${yScale(getYValue(p[1]))}) scale(1)`);
+                        pts.filter(p => p[0] === stickyData[0]).transition().duration(200)
+                            .attr('transform', p => `translate(${xScale(Math.log10(getResolutionMass(p[1])))},${yScale(getYValue(p[1]))}) scale(1.5)`);
+                        tooltip.html(buildTooltipHTML(d, true))
+                            .classed('visible', true).classed('sticky', true)
+                            .style('pointer-events', 'auto');
+                        const svgRect = svg.node().getBoundingClientRect();
+                        positionTooltip({
+                            pageX: svgRect.left + margin.left + xScale(Math.log10(getResolutionMass(d[1]))) + window.scrollX,
+                            pageY: svgRect.top + margin.top + yScale(getYValue(d[1])) + window.scrollY,
+                        });
+                    }
+                    // Update legend active classes directly
+                    document.querySelectorAll('.legend-entry').forEach((node, i) => {
+                        const entryName = legendSimsFlat[i] ? legendSimsFlat[i][0] : null;
+                        node.classList.toggle('legend-entry-active', !!(stickyData && stickyData[0] === entryName));
                     });
-                }
-                // Update legend active classes directly — avoids a full render() which would reset the enlargement
-                document.querySelectorAll('.legend-entry').forEach((node, i) => {
-                    const entryName = legendSims[i] ? legendSims[i][0] : null;
-                    node.classList.toggle('legend-entry-active', !!(stickyData && stickyData[0] === entryName));
                 });
             });
         });
@@ -1074,13 +1149,13 @@ function render() {
 
     if (showIconKey) {
         const keyX = 10;
-        const keyY = height - 240;
+        const keyY = height - 270;
 
         const keyBox = iconKeyGroup.append('foreignObject')
             .attr('x', keyX)
             .attr('y', keyY)
             .attr('width', 180)
-            .attr('height', 230);
+            .attr('height', 260);
 
         const keyDiv = keyBox.append('xhtml:div')
             .attr('class', 'icon-key');
@@ -1237,6 +1312,34 @@ function render() {
         //     .attr('class', 'icon-key-label')
         //     .text('Zoom + Suite');
 
+        // Dust (dot with 6 satellite circles)
+        const dustItem = keyDiv.append('div')
+            .attr('class', 'icon-key-item');
+
+        const dustSvg = dustItem.append('svg')
+            .attr('width', 20)
+            .attr('height', 20)
+            .attr('overflow', 'visible');
+
+        dustSvg.append('circle')
+            .attr('cx', 10)
+            .attr('cy', 10)
+            .attr('r', 5)
+            .attr('class', 'icon-key-fill');
+
+        for (let i = 0; i < 5; i++) {
+            const angle = -Math.PI / 2 + Math.PI / 5 + i * 2 * Math.PI / 5;
+            dustSvg.append('circle')
+                .attr('cx', 10 + 7 * Math.cos(angle))
+                .attr('cy', 10 + 7 * Math.sin(angle))
+                .attr('r', 2)
+                .attr('class', 'icon-key-fill');
+        }
+
+        dustItem.append('span')
+            .attr('class', 'icon-key-label')
+            .text('Live dust model');
+
         // MHD (dot with dipole field lines)
         const mhdItem = keyDiv.append('div')
             .attr('class', 'icon-key-item');
@@ -1334,6 +1437,14 @@ document.querySelectorAll('.section-header').forEach(header => {
 });
 
 // Event listeners
+document.querySelectorAll('input[name="xaxis"]').forEach(radio => {
+    radio.addEventListener('change', (e) => {
+        currentXMode = e.target.value;
+        updateXLabel();
+        render();
+    });
+});
+
 document.querySelectorAll('input[name="yaxis"]').forEach(radio => {
     radio.addEventListener('change', (e) => updateYAxis(e.target.value));
 });
@@ -1463,6 +1574,10 @@ document.getElementById('anim-speed').addEventListener('input', e => {
 
 document.querySelectorAll('#show-surveys, #show-legend, #show-icon-key, #show-emojis, #show-code-emojis, #show-effective-volume, #filter-periodic, #filter-zoom, #filter-rt, #filter-hydro, #filter-dmo, #filter-mhd').forEach(cb => {
     cb.addEventListener('change', render);
+});
+
+document.getElementById('show-combined-volume').addEventListener('change', () => {
+    updateYAxis(currentYMode);
 });
 
 document.getElementById('show-emojis').addEventListener('change', function() {
@@ -1637,7 +1752,7 @@ function refreshAxes() {
 }
 
 function getDefaultYDomain() {
-    if (currentYMode === 'volume') return [2.5, 12];
+    if (currentYMode === 'volume') return [1, 12];
     return calcAreaDomain();
 }
 
@@ -1725,6 +1840,11 @@ document.getElementById('reset-all').addEventListener('click', () => {
     animStepMs = 800;
     document.getElementById('anim-speed').value = 800;
     document.getElementById('anim-speed-value').textContent = formatAnimSpeedLabel(animStepMs);
+
+    // X-axis back to auto
+    currentXMode = 'auto';
+    document.querySelector('input[name="xaxis"][value="auto"]').checked = true;
+    updateXLabel();
 
     // Y-axis back to volume
     document.querySelector('input[name="yaxis"][value="volume"]').checked = true;
