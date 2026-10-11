@@ -86,7 +86,7 @@ const clipRect = svg.append('defs').append('clipPath').attr('id', 'plot-clip')
 
 // Scales (ranges set in resizeChart)
 const xScale = d3.scaleLinear().domain([14, 3.8]);
-const yScale = d3.scaleLinear().domain([1, 12]);
+const yScale = d3.scaleLinear().domain([0.5, 12]);
 
 // Tooltip
 const tooltip = d3.select('.tooltip');
@@ -165,7 +165,7 @@ const yearDisplayText = g.append('text')
 
 // ── Box-select zoom ──────────────────────────────────────────────
 const DEFAULT_X_DOMAIN = [14, 3.8];
-const DEFAULT_Y_DOMAIN = [1, 12];
+const DEFAULT_Y_DOMAIN = [0.5, 12];
 let isZoomed = false;
 let dragState = null;
 
@@ -460,9 +460,9 @@ function updateYAxis(mode) {
                 .map(sim => getYValue(sim))
                 .filter(v => isFinite(v));
             const maxY = Math.max(...yValues, 12);
-            yScale.domain([1, maxY + 0.3]);
+            yScale.domain([0.5, maxY + 0.3]);
         } else {
-            yScale.domain([1, 12]);
+            yScale.domain([0.5, 12]);
         }
         yLabel.html('log<tspan dy="5" font-size="11px">10</tspan><tspan dy="-5">(volume / cMpc</tspan><tspan dy="-6" font-size="11px">3</tspan><tspan dy="6">)</tspan>');
     } else {
@@ -1752,7 +1752,7 @@ function refreshAxes() {
 }
 
 function getDefaultYDomain() {
-    if (currentYMode === 'volume') return [1, 12];
+    if (currentYMode === 'volume') return [0.5, 12];
     return calcAreaDomain();
 }
 
