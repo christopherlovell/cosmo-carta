@@ -263,6 +263,17 @@ function getSimEmoji(simName) {
     return suite ? (familyEmoji[suite] || null) : null;
 }
 
+function getSimSound(simName) {
+    if (familySound[simName]) return familySound[simName];
+    const suite = simToFamily[simName];
+    return suite ? (familySound[suite] || null) : null;
+}
+
+function getCodeSound(simName) {
+    const sim = simulations[simName];
+    return sim && sim.code ? (codeSound[sim.code] || null) : null;
+}
+
 function getCodeEmoji(simName) {
     const sim = simulations[simName];
     return sim && sim.code ? (codeEmoji[sim.code] || null) : null;
@@ -344,13 +355,65 @@ function simReverbMix(sim) {
     return Math.max(0, Math.min(1, (logVol - 3) / (12 - 3)));
 }
 
-function playSimSound(sim) {
+// Sound clips: raw bytes are fetched once (at page load, see below), decoding waits for the
+// audio context, which browsers only allow after a user gesture
+const soundBytes = new Map();     // file → Promise<ArrayBuffer>
+const soundBuffers = new Map();   // file → AudioBuffer (null while decoding or if it failed)
+function fetchSoundClip(file) {
+    if (!soundBytes.has(file)) {
+        soundBytes.set(file, fetch(`sounds/${file}`, { priority: 'low' })
+            .then(r => { if (!r.ok) throw new Error(r.status); return r.arrayBuffer(); }));
+    }
+    return soundBytes.get(file);
+}
+function loadSoundClip(file) {
+    if (soundBuffers.has(file)) return;
+    soundBuffers.set(file, null);
+    fetchSoundClip(file)
+        .then(buf => getAudioCtx().decodeAudioData(buf.slice(0)))
+        .then(decoded => soundBuffers.set(file, decoded))
+        .catch(e => { console.warn(`Could not load sounds/${file}:`, e); soundBuffers.delete(file); soundBytes.delete(file); });
+}
+const allSoundClips = () => [...new Set([...Object.values(familySound), ...Object.values(codeSound)])];
+// Fetch every clip (~250 KB) once the page has settled, so they are cached before sounds are turned on
+(window.requestIdleCallback || (cb => setTimeout(cb, 2000)))(() => allSoundClips().forEach(fetchSoundClip));
+
+// Decode the clips the active emoji layer can use, so the first hover isn't delayed
+function preloadSoundClips() {
+    if (!document.getElementById('play-sounds').checked) return;
+    const wantFamily = document.getElementById('show-emojis').checked;
+    const wantCode = document.getElementById('show-code-emojis').checked;
+    if (wantFamily) Object.values(familySound).forEach(loadSoundClip);
+    if (wantCode) Object.values(codeSound).forEach(loadSoundClip);
+}
+
+// Play a suite's clip through the shared gain. Returns false if the clip isn't ready yet
+function playSoundClip(file) {
+    const buffer = soundBuffers.get(file);
+    if (!buffer) { loadSoundClip(file); return false; }
+    const ctx = getAudioCtx();
+    const src = ctx.createBufferSource();
+    const env = ctx.createGain();
+    src.buffer = buffer;
+    env.gain.value = soundGain;
+    src.connect(env);
+    env.connect(masterGain);
+    src.start(ctx.currentTime);
+    return true;
+}
+
+function playSimSound(sim, name) {
     if (!document.getElementById('play-sounds').checked) return;
     const now = Date.now();
     if (now - (soundCooldowns.get(sim) || 0) < 1000) return;
     soundCooldowns.set(sim, now);
     try {
         const ctx = getAudioCtx();
+        // With family (or code) emojis shown, suites (or codes) that have a clip play it instead of the tone
+        let clip = null;
+        if (name && document.getElementById('show-code-emojis').checked) clip = getCodeSound(name);
+        if (name && document.getElementById('show-emojis').checked) clip = getSimSound(name);
+        if (clip && playSoundClip(clip)) return;
         const freq = simFrequency(sim);
         const tail = simTailLength(sim);
         const pan = simPan(sim);
@@ -1026,7 +1089,7 @@ function render() {
     const pointNode = d => allPoints.filter(p => p[0] === d[0]);
 
     const enterPoint = (d, event) => {
-        playSimSound(d[1]);
+        playSimSound(d[1], d[0]);
         // Raise above neighbours and grow
         pointNode(d).raise().transition().duration(200)
             .attr('transform', pointTransform(d, 1.5));
@@ -1551,8 +1614,8 @@ function startAnimation() {
         yearDisplayText.text(currentMaxYear);
 
         // Play a sound for each sim that first appears this year, staggered slightly
-        const newSims = Object.values(simulations).filter(s => s.year === currentMaxYear);
-        newSims.forEach((sim, i) => setTimeout(() => playSimSound(sim), i * 50));
+        const newSims = Object.entries(simulations).filter(([, s]) => s.year === currentMaxYear);
+        newSims.forEach(([name, sim], i) => setTimeout(() => playSimSound(sim, name), i * 50));
 
         updateYearUI();
         render();
@@ -1610,12 +1673,14 @@ document.getElementById('show-emojis').addEventListener('change', function() {
     if (this.checked) {
         document.getElementById('show-code-emojis').checked = false;
         render();
+        preloadSoundClips();
     }
 });
 document.getElementById('show-code-emojis').addEventListener('change', function() {
     if (this.checked) {
         document.getElementById('show-emojis').checked = false;
         render();
+        preloadSoundClips();
     }
 });
 
@@ -1644,6 +1709,7 @@ document.getElementById('families-clear-all').addEventListener('click', () => {
 // ── Sound controls ───────────────────────────────────────────────
 document.getElementById('play-sounds').addEventListener('change', e => {
     document.getElementById('sound-controls').style.display = e.target.checked ? 'block' : 'none';
+    preloadSoundClips();
 });
 
 document.getElementById('sound-gain').addEventListener('input', e => {

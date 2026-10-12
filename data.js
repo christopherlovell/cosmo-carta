@@ -496,7 +496,7 @@ const familyEmoji = {
     'FLAMINGO':      '🦩',
     'FLARES':        '👖',
     'MillenniumTNG': '🎆',
-    'COLIBRE':       '🐦',
+    'COLIBRE':       'hummingbird.png',
     'MassiveBlack':  '🖤',
     'BlueTides':     '🌊',
     'FABLE':         '📖',
@@ -522,6 +522,34 @@ const familyEmoji = {
     'OWLS':          '🦉',
     'SLOW':          '🐌',
     'Quijote':       '🏇',
+};
+
+// Optional sound clip per suite (or per individual simulation name), as a filename in the sounds/ folder.
+// Clips only play while 'family emojis' are shown; otherwise the synthesised tone is used.
+const familySound = {
+    'EAGLE': 'family-eagle-cry.mp3',
+    'IllustrisTNG': 'family-illustristng-picard.mp3',
+    'COLIBRE': 'family-colibre-hummingbird.mp3',
+    'FLAMINGO': 'family-flamingo-call.mp3',
+    'CAMELS': 'family-camels-camel.mp3',
+    'CROCODILE': 'family-crocodile-roar.mp3',
+    'OWLS': 'family-owls-hoot.mp3',
+    'SIMBA': 'family-simba-mufasa-lionking.mp3',
+    'MUFASA': 'family-simba-mufasa-lionking.mp3',
+    'BlueTides': 'family-bluetides-wave.mp3',
+    'ELVIS': 'sim-elvis-presley.mp3',
+};
+
+// Optional sound clip per numerical code, played while 'code emojis' are shown
+const codeSound = {
+    'SWIFT': 'code-swift-call.mp3',
+    'GIZMO': 'code-gizmo-gremlin.mp3',
+    'Gadget': 'code-gadget-woohoo.mp3',
+    'Gadget-1': 'code-gadget-woohoo.mp3',
+    'Gadget-2': 'code-gadget2-word.mp3',
+    'Gadget-3': 'code-gadget-woohoo.mp3',
+    'Gadget-4': 'code-gadget-woohoo.mp3',
+    'MP-Gadget': 'code-gadget-woohoo.mp3',
 };
 
 // Optional emoji per numerical code. Value is a Unicode emoji or PNG filename from emoji/ folder.
