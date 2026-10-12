@@ -1,16 +1,69 @@
-@import url("https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Sora:wght@600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&family=Newsreader:ital,opsz,wght@0,6..72,500;0,6..72,600;1,6..72,500&display=swap");
 
+/* ── Theme tokens ───────────────────────────────────────────────── */
 :root {
-    --bg-color: #0c0e12;
-    --card-bg: #15191f;
-    --sidebar-bg: #12161c;
-    --border-color: rgba(233, 238, 245, 0.15);
-    --text-color: #edf1f5;
-    --text-muted: #adb4bd;
-    --accent: #1fc9c2;
-    --hover: #ffc233;
-    --header-bg: #0a0c10;
-    --input-bg: #1b2028;
+    --bg-color: #111113;
+    --card-bg: #1a1a1d;
+    --sidebar-bg: #161618;
+    --border-color: rgba(235, 231, 223, 0.1);
+    --border-strong: rgba(235, 231, 223, 0.22);
+    --text-color: #ebe7df;
+    --text-muted: #9a968e;
+    --accent: #8db0d3;
+    --accent-soft: rgba(141, 176, 211, 0.12);
+    --hover: #c9d8e6;
+    --input-bg: #232327;
+    --ink: #ebe7df;
+
+    /* Chart surface */
+    --chart-bg: #1a1a1d;
+    --chart-text: #ebe7df;
+    --chart-text-muted: #9a968e;
+    --chart-axis: rgba(235, 231, 223, 0.35);
+    --chart-grid: rgba(235, 231, 223, 0.06);
+    --chart-panel-bg: rgba(26, 26, 29, 0.92);
+    --chart-panel-border: rgba(235, 231, 223, 0.16);
+    --chart-shadow: rgba(0, 0, 0, 0);
+
+    /* Data colours */
+    --dmo: #a98ae6;
+    --z0: #ece6d8;
+    --z3: #e9962e;
+    --z6: #c1321c;
+    --sim-default: #c9c4ba;
+
+    --font-ui: "IBM Plex Sans", "Segoe UI", sans-serif;
+    --font-mono: "IBM Plex Mono", "SFMono-Regular", Menlo, monospace;
+    --font-display: "Newsreader", Georgia, serif;
+}
+
+body.bright {
+    --bg-color: #e9e6df;
+    --card-bg: #f8f6f1;
+    --sidebar-bg: #f1eee7;
+    --border-color: rgba(30, 29, 26, 0.12);
+    --border-strong: rgba(30, 29, 26, 0.3);
+    --text-color: #1e1d1a;
+    --text-muted: #6b685f;
+    --accent: #2f5f8f;
+    --accent-soft: rgba(47, 95, 143, 0.1);
+    --hover: #1f4568;
+    --input-bg: #e6e2da;
+    --ink: #1e1d1a;
+
+    --chart-bg: #f8f6f1;
+    --chart-text: #1e1d1a;
+    --chart-text-muted: #6b685f;
+    --chart-axis: rgba(30, 29, 26, 0.45);
+    --chart-grid: rgba(30, 29, 26, 0.07);
+    --chart-panel-bg: rgba(255, 253, 249, 0.94);
+    --chart-panel-border: rgba(30, 29, 26, 0.16);
+
+    --dmo: #6a3fb3;
+    --z0: #2a2a2e;
+    --z3: #e08a18;
+    --z6: #ad2718;
+    --sim-default: #3a3935;
 }
 
 * {
@@ -20,34 +73,34 @@
 }
 
 body {
-    font-family: "Manrope", "Segoe UI", sans-serif;
+    font-family: var(--font-ui);
     font-size: 1rem;
-    line-height: 1.75;
+    line-height: 1.6;
     background-color: var(--bg-color);
-    background-image:
-        radial-gradient(145% 110% at 8% -18%, rgba(31, 201, 194, 0.04), transparent 62%),
-        radial-gradient(115% 95% at 86% 0%, rgba(255, 194, 51, 0.03), transparent 66%);
     color: var(--text-color);
     padding: 20px;
+    -webkit-font-smoothing: antialiased;
+    transition: background-color 0.25s, color 0.25s;
 }
 
 .container {
     max-width: 1400px;
     margin: 0 auto;
     background: var(--card-bg);
-    border-radius: 1rem;
+    border-radius: 6px;
     border: 1px solid var(--border-color);
     overflow: hidden;
     display: flex;
     flex-direction: column;
     height: calc(100vh - 40px - 28px);
     min-height: 0;
+    transition: background-color 0.25s, border-color 0.25s;
 }
 
 .sidebar-toggle {
     background: var(--card-bg);
     border: 1px solid var(--border-color);
-    border-radius: 8px;
+    border-radius: 4px;
     color: var(--text-muted);
     cursor: pointer;
     padding: 8px 10px;
@@ -59,12 +112,9 @@ body {
 }
 
 .sidebar-toggle:hover {
-    background: rgba(31, 201, 194, 0.1);
-    border-color: var(--accent);
-    color: var(--accent);
+    border-color: var(--border-strong);
+    color: var(--text-color);
 }
-
-
 
 .main-content {
     display: grid;
@@ -85,37 +135,42 @@ body.sidebar-open .main-content {
     overflow: hidden;
     min-width: 0;
     height: 100%;
+    transition: background-color 0.25s;
 }
 
 .sidebar-inner {
     width: 280px;
     height: 100%;
-    padding: 20px;
+    padding: 22px 20px 20px;
     overflow-y: auto;
     display: flex;
     flex-direction: column;
     box-sizing: border-box;
+    scrollbar-width: thin;
+    scrollbar-color: var(--border-strong) transparent;
 }
 
 .sidebar-title {
-    font-size: 24px;
-    font-weight: 700;
+    font-family: var(--font-display);
+    font-size: 30px;
+    font-weight: 500;
     color: var(--text-color);
-    letter-spacing: 0.01em;
-    margin-bottom: 16px;
-    padding-bottom: 12px;
-    border-bottom: 1px solid var(--border-color);
+    letter-spacing: -0.01em;
+    line-height: 1.1;
+    margin-bottom: 18px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--border-strong);
 }
 
 .control-section {
-    margin-bottom: 25px;
+    margin-bottom: 18px;
 }
 
 .control-section h3 {
-    font-family: "Sora", "Segoe UI", sans-serif;
+    font-family: var(--font-mono);
     font-size: 11px;
-    font-weight: 600;
-    margin-bottom: 12px;
+    font-weight: 500;
+    margin-bottom: 10px;
     color: var(--text-muted);
     text-transform: uppercase;
     letter-spacing: 0.08em;
@@ -127,25 +182,46 @@ body.sidebar-open .main-content {
     display: flex;
     align-items: center;
     gap: 8px;
-    padding: 8px;
-    margin: -8px -8px 12px -8px;
-    border-radius: 8px;
-    transition: background 0.2s;
+    padding: 6px 8px;
+    margin: -6px -8px 10px -8px;
+    border-radius: 3px;
+    transition: color 0.15s, background 0.15s;
 }
 
 .section-header:hover {
-    background: rgba(31, 201, 194, 0.08);
+    color: var(--text-color);
+    background: var(--accent-soft);
 }
 
+/* Thin chevron drawn in CSS; the glyph in the markup is hidden */
 .toggle-icon {
-    font-size: 10px;
-    transition: transform 0.2s;
+    font-size: 0;
+    width: 8px;
+    height: 8px;
     display: inline-block;
-    color: var(--accent);
+    position: relative;
+    transition: transform 0.2s;
+    color: var(--text-muted);
+}
+
+.toggle-icon::before {
+    content: "";
+    position: absolute;
+    left: 1px;
+    top: 0;
+    width: 5px;
+    height: 5px;
+    border-right: 1.5px solid currentColor;
+    border-bottom: 1.5px solid currentColor;
+    transform: rotate(45deg);
 }
 
 .toggle-icon.collapsed {
     transform: rotate(-90deg);
+}
+
+.section-header:hover .toggle-icon {
+    color: var(--accent);
 }
 
 .section-content {
@@ -154,14 +230,14 @@ body.sidebar-open .main-content {
 }
 
 #about-content {
-    font-size: 12px;
-    line-height: 1.5;
+    font-size: 12.5px;
+    line-height: 1.55;
     color: var(--text-muted);
     padding-bottom: 4px;
 }
 
 #about-content p {
-    margin: 0 0 6px;
+    margin: 0 0 7px;
 }
 
 .section-content.collapsed {
@@ -171,29 +247,29 @@ body.sidebar-open .main-content {
 .checkbox-group {
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 2px;
 }
 
 .checkbox-item {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 9px;
     font-size: 13px;
     cursor: pointer;
-    padding: 5px 6px;
-    border-radius: 6px;
-    transition: background 0.2s;
+    padding: 4px 6px;
+    border-radius: 3px;
+    transition: background 0.15s;
     color: var(--text-color);
 }
 
 .checkbox-item:hover {
-    background: rgba(31, 201, 194, 0.08);
+    background: var(--accent-soft);
 }
 
 input[type="checkbox"] {
     cursor: pointer;
-    width: 15px;
-    height: 15px;
+    width: 14px;
+    height: 14px;
     accent-color: var(--accent);
 }
 
@@ -205,13 +281,13 @@ input[type="radio"] {
 .radio-group {
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 6px;
 }
 
 .radio-item {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 9px;
     font-size: 13px;
     cursor: pointer;
     color: var(--text-color);
@@ -234,38 +310,24 @@ input[type="range"] {
     margin-bottom: 4px;
 }
 
+.slider-label span,
+.year-range-display span {
+    font-family: var(--font-mono);
+    color: var(--text-color);
+}
+
 label {
     color: var(--text-muted);
 }
 
+/* ── Chart surface ──────────────────────────────────────────────── */
 .chart-container {
     padding: 30px 30px 60px 30px;
     position: relative;
     height: 100%;
     overflow: hidden;
     background: var(--chart-bg);
-    transition: background-color 0.3s;
-
-    /* Light mode defaults */
-    --chart-bg: #ffffff;
-    --chart-text: #333333;
-    --chart-text-muted: #666666;
-    --chart-axis: #666666;
-    --chart-grid: #e0e0e0;
-    --chart-panel-bg: #ffffff;
-    --chart-panel-border: #cccccc;
-    --chart-shadow: rgba(0, 0, 0, 0.08);
-}
-
-.chart-container.dark {
-    --chart-bg: #15191f;
-    --chart-text: #edf1f5;
-    --chart-text-muted: #adb4bd;
-    --chart-axis: rgba(233, 238, 245, 0.35);
-    --chart-grid: rgba(233, 238, 245, 0.07);
-    --chart-panel-bg: #1f252e;
-    --chart-panel-border: rgba(233, 238, 245, 0.15);
-    --chart-shadow: rgba(0, 0, 0, 0.4);
+    transition: background-color 0.25s;
 }
 
 svg {
@@ -276,14 +338,20 @@ svg {
 .axis path,
 .axis line {
     stroke: var(--chart-axis);
-    stroke-width: 1.5;
+    stroke-width: 1;
     shape-rendering: crispEdges;
 }
 
 .axis text {
+    fill: var(--chart-text-muted);
+    font-size: 12px;
+    font-family: var(--font-mono);
+}
+
+.chart-label {
     fill: var(--chart-text);
-    font-size: 13px;
-    font-family: "Manrope", "Segoe UI", sans-serif;
+    font-family: var(--font-display);
+    font-size: 17px;
 }
 
 .particle-line {
@@ -297,9 +365,9 @@ svg {
 .particle-label {
     font-size: 10px;
     fill: var(--chart-text);
-    opacity: 0.4;
+    opacity: 0.45;
     pointer-events: none;
-    font-family: "Manrope", "Segoe UI", sans-serif;
+    font-family: var(--font-mono);
 }
 
 .sim-point {
@@ -308,24 +376,38 @@ svg {
 }
 
 .sim-point:hover {
-    opacity: 0.7;
+    opacity: 0.8;
 }
 
 .tooltip {
     position: absolute;
-    background: rgba(10, 12, 16, 0.95);
-    color: var(--text-color);
-    border: 1px solid var(--border-color);
+    background: var(--chart-panel-bg);
+    color: var(--chart-text);
+    border: 1px solid var(--chart-panel-border);
     padding: 10px 12px;
-    border-radius: 8px;
+    border-radius: 4px;
     font-size: 12px;
-    font-family: "Manrope", "Segoe UI", sans-serif;
+    font-family: var(--font-ui);
     pointer-events: none;
     opacity: 0;
     transition: opacity 0.2s;
     z-index: 1000;
     max-width: 250px;
     line-height: 1.5;
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+}
+
+.tooltip strong {
+    font-family: var(--font-display);
+    font-size: 15px;
+    font-weight: 600;
+    display: block;
+    margin-bottom: 3px;
+}
+
+.tooltip strong + br {
+    display: none;
 }
 
 .tooltip.visible {
@@ -334,20 +416,20 @@ svg {
 
 .tooltip.sticky {
     border-color: var(--accent);
-    box-shadow: 0 0 0 1px var(--accent), 0 4px 12px rgba(0, 0, 0, 0.4);
 }
 
 .tooltip-link {
-    display: block;
+    display: inline-block;
     margin-top: 8px;
     color: var(--accent);
     text-decoration: none;
-    font-weight: 600;
+    font-weight: 500;
     font-size: 11px;
+    border-bottom: 1px solid currentColor;
 }
 
 .tooltip-link:hover {
-    text-decoration: underline;
+    color: var(--hover);
 }
 
 .legend-item {
@@ -357,14 +439,15 @@ svg {
 
 .survey-line {
     stroke: var(--chart-text-muted);
-    stroke-width: 2;
-    opacity: 0.4;
+    stroke-width: 1.5;
+    opacity: 0.45;
 }
 
 .survey-label {
-    font-size: 12px;
+    font-size: 11px;
     fill: var(--chart-text-muted);
-    opacity: 0.8;
+    opacity: 0.85;
+    font-family: var(--font-mono);
 }
 
 .suite-ring {
@@ -397,54 +480,65 @@ svg {
     stroke-width: 2;
 }
 
+.zoom-selection-rect {
+    fill: var(--accent-soft);
+    stroke: var(--accent);
+}
+
+/* Floating panels (legend, icon key) */
 .legend-box {
     background: var(--chart-panel-bg);
     border: 1px solid var(--chart-panel-border);
-    border-radius: 8px;
-    padding: 7px 8px;
+    border-radius: 4px;
+    padding: 8px 9px;
     font-size: 10px;
-    font-family: "Manrope", "Segoe UI", sans-serif;
+    font-family: var(--font-ui);
     max-height: 360px;
     overflow-y: auto;
-    box-shadow: 0 2px 8px var(--chart-shadow);
+    overflow-x: hidden;
+    scrollbar-width: thin;
+    scrollbar-color: var(--chart-panel-border) transparent;
 }
 
 .legend-title {
-    font-family: "Sora", "Segoe UI", sans-serif;
-    font-weight: 600;
+    font-family: var(--font-mono);
+    font-weight: 500;
     font-size: 10px;
-    margin-bottom: 5px;
-    color: var(--chart-text);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+    color: var(--chart-text-muted);
 }
 
 .legend-entry {
     display: flex;
     align-items: baseline;
     gap: 4px;
-    margin-bottom: 2px;
-    line-height: 1.25;
+    margin-bottom: 1px;
+    line-height: 1.3;
     cursor: pointer;
-    border-radius: 3px;
+    border-radius: 2px;
     padding: 1px 3px;
     margin-left: -3px;
 }
 
 .legend-entry:hover {
-    background: var(--chart-panel-border);
+    background: var(--accent-soft);
 }
 
 .legend-entry-active {
-    background: var(--chart-panel-border);
+    background: var(--accent-soft);
 }
 
 .legend-entry-active .legend-name {
     font-weight: 600;
-    color: var(--text-color);
+    color: var(--chart-text);
 }
 
 .legend-number {
-    font-weight: 600;
-    min-width: 20px;
+    font-family: var(--font-mono);
+    font-weight: 500;
+    min-width: 22px;
     color: var(--chart-text-muted);
 }
 
@@ -453,17 +547,20 @@ svg {
 }
 
 .legend-family {
-    font-weight: 600;
-    font-size: 9px;
+    font-family: var(--font-display);
+    font-style: italic;
+    font-weight: 500;
+    font-size: 11px;
     color: var(--chart-text-muted);
-    margin-top: 4px;
-    margin-bottom: 1px;
+    margin-top: 6px;
+    margin-bottom: 2px;
     padding-left: 1px;
 }
 
 .point-label {
+    font-family: var(--font-mono);
     font-size: 9px;
-    font-weight: 600;
+    font-weight: 500;
     fill: var(--chart-text);
     text-anchor: middle;
     cursor: pointer;
@@ -471,35 +568,33 @@ svg {
 
 .point-label:hover {
     font-size: 11px;
-}
-
-.chart-label {
-    fill: var(--chart-text);
+    fill: var(--accent);
 }
 
 .icon-key {
     background: var(--chart-panel-bg);
     border: 1px solid var(--chart-panel-border);
-    border-radius: 8px;
-    padding: 10px;
+    border-radius: 4px;
+    padding: 10px 11px;
     font-size: 11px;
-    font-family: "Manrope", "Segoe UI", sans-serif;
-    box-shadow: 0 2px 8px var(--chart-shadow);
+    font-family: var(--font-ui);
 }
 
 .icon-key-title {
-    font-family: "Sora", "Segoe UI", sans-serif;
-    font-weight: 600;
-    font-size: 12px;
-    margin-bottom: 10px;
-    color: var(--chart-text);
+    font-family: var(--font-mono);
+    font-weight: 500;
+    font-size: 10px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+    color: var(--chart-text-muted);
 }
 
 .icon-key-item {
     display: flex;
     align-items: center;
     gap: 8px;
-    margin-bottom: 8px;
+    margin-bottom: 7px;
 }
 
 .icon-key-item svg {
@@ -509,8 +604,8 @@ svg {
 }
 
 .icon-key-label {
-    color: var(--chart-text-muted);
-    font-size: 10px;
+    color: var(--chart-text);
+    font-size: 10.5px;
     flex: 1;
 }
 
@@ -525,19 +620,16 @@ svg {
 }
 
 .colorbar-gradient {
-    height: 10px;
-    background: linear-gradient(to right, #f0f0f0, #ff8800, #cc2200);
+    height: 8px;
+    background: linear-gradient(to right, var(--z0), var(--z3), var(--z6));
     border-radius: 2px;
-    border: 1px solid rgba(128, 128, 128, 0.3);
-}
-
-.chart-container:not(.dark) .colorbar-gradient {
-    background: linear-gradient(to right, #000000, #ff8800, #cc2200);
+    border: 1px solid var(--chart-panel-border);
 }
 
 .colorbar-ticks {
     display: flex;
     justify-content: space-between;
+    font-family: var(--font-mono);
     font-size: 9px;
     color: var(--chart-text-muted);
     margin-top: 2px;
@@ -545,7 +637,7 @@ svg {
 
 .icon-key-divider {
     border-top: 1px solid var(--chart-panel-border);
-    margin: 6px 0;
+    margin: 7px 0;
 }
 
 /* ── Dual range slider ──────────────────────────────────────────── */
@@ -568,7 +660,7 @@ svg {
     left: 0;
     right: 0;
     transform: translateY(-50%);
-    height: 4px;
+    height: 3px;
     background: var(--input-bg);
     border-radius: 2px;
     pointer-events: none;
@@ -608,29 +700,27 @@ svg {
 .dual-range::-webkit-slider-thumb {
     -webkit-appearance: none;
     appearance: none;
-    width: 14px;
-    height: 14px;
+    width: 13px;
+    height: 13px;
     border-radius: 50%;
-    background: var(--accent);
+    background: var(--card-bg);
     cursor: pointer;
     pointer-events: all;
-    border: none;
-    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
+    border: 2px solid var(--accent);
     margin-top: -5px;
 }
 
 .dual-range::-moz-range-thumb {
-    width: 14px;
-    height: 14px;
+    width: 13px;
+    height: 13px;
     border-radius: 50%;
-    background: var(--accent);
+    background: var(--card-bg);
     cursor: pointer;
     pointer-events: all;
-    border: none;
-    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
+    border: 2px solid var(--accent);
 }
 
-/* ── Clear-all button ───────────────────────────────────────────── */
+/* ── Buttons ────────────────────────────────────────────────────── */
 .select-clear-btns {
     display: flex;
     gap: 6px;
@@ -642,48 +732,49 @@ svg {
     padding: 4px 8px;
     background: transparent;
     border: 1px solid var(--border-color);
-    border-radius: 4px;
-    color: var(--text-secondary);
+    border-radius: 3px;
+    color: var(--text-muted);
+    font-family: var(--font-ui);
     font-size: 11px;
     text-align: center;
     cursor: pointer;
+    transition: border-color 0.15s, color 0.15s;
 }
 
 .clear-btn:hover {
-    border-color: var(--accent);
-    color: var(--accent);
+    border-color: var(--border-strong);
+    color: var(--text-color);
 }
 
-/* ── Year animation controls ────────────────────────────────────── */
 .year-controls {
     display: flex;
-    gap: 8px;
+    gap: 6px;
     margin-top: 4px;
 }
 
 .year-btn {
     flex: 1;
-    padding: 6px 0;
-    background: var(--input-bg);
-    color: var(--text-color);
+    padding: 5px 0;
+    background: transparent;
+    color: var(--text-muted);
     border: 1px solid var(--border-color);
-    border-radius: 6px;
+    border-radius: 3px;
     cursor: pointer;
-    font-size: 13px;
-    font-family: "Manrope", "Segoe UI", sans-serif;
-    transition: background 0.2s, border-color 0.2s, color 0.2s;
+    font-size: 12px;
+    font-family: var(--font-ui);
+    transition: border-color 0.15s, color 0.15s;
 }
 
 .year-btn:hover {
-    background: rgba(31, 201, 194, 0.1);
-    border-color: var(--accent);
-    color: var(--accent);
+    border-color: var(--border-strong);
+    color: var(--text-color);
 }
 
 .year-display {
     font-size: 72px;
-    font-weight: 700;
-    font-family: "Sora", "Segoe UI", sans-serif;
+    font-weight: 500;
+    font-family: var(--font-display);
+    font-style: italic;
     fill: var(--chart-text);
     pointer-events: none;
 }
@@ -697,7 +788,7 @@ svg {
 }
 
 .family-group {
-    margin-bottom: 12px;
+    margin-bottom: 10px;
 }
 
 .family-header {
@@ -705,22 +796,36 @@ svg {
     align-items: center;
     gap: 6px;
     cursor: pointer;
-    padding: 5px 6px;
-    margin-bottom: 4px;
-    border-radius: 6px;
-    transition: background 0.2s;
+    padding: 4px 6px;
+    margin-bottom: 2px;
+    border-radius: 3px;
+    transition: background 0.15s;
 }
 
 .family-header:hover {
-    background: rgba(31, 201, 194, 0.08);
+    background: var(--accent-soft);
 }
 
 .family-toggle {
-    font-size: 10px;
+    font-size: 0;
+    width: 12px;
+    height: 8px;
+    position: relative;
     transition: transform 0.2s;
     display: inline-block;
-    width: 12px;
-    color: var(--accent);
+    color: var(--text-muted);
+}
+
+.family-toggle::before {
+    content: "";
+    position: absolute;
+    left: 3px;
+    top: 0;
+    width: 5px;
+    height: 5px;
+    border-right: 1.5px solid currentColor;
+    border-bottom: 1.5px solid currentColor;
+    transform: rotate(45deg);
 }
 
 .family-toggle.collapsed {
@@ -733,8 +838,8 @@ svg {
 }
 
 .family-name {
-    font-weight: 600;
-    font-size: 12px;
+    font-weight: 500;
+    font-size: 12.5px;
     color: var(--text-color);
     flex: 1;
 }
@@ -749,17 +854,17 @@ svg {
 }
 
 .sim-item {
-    margin-bottom: 4px;
+    margin-bottom: 2px;
 }
 
 .download-section {
-    padding: 20px 20px 0;
+    padding: 18px 20px 0;
     border-top: 1px solid var(--border-color);
     margin-top: auto;
 }
 
 .reset-section {
-    padding: 12px 20px 20px;
+    padding: 10px 20px 20px;
 }
 
 .reset-btn {
@@ -768,39 +873,42 @@ svg {
     padding: 8px 0;
     background: transparent;
     border: 1px solid var(--border-color);
-    border-radius: 6px;
+    border-radius: 3px;
     color: var(--text-muted);
+    font-family: var(--font-ui);
     font-size: 12px;
     cursor: pointer;
-    transition: border-color 0.2s, color 0.2s;
+    transition: border-color 0.15s, color 0.15s;
 }
 
 .reset-btn:hover {
-    border-color: var(--accent);
-    color: var(--accent);
+    border-color: var(--border-strong);
+    color: var(--text-color);
 }
 
 .download-select {
     width: 100%;
-    padding: 10px 12px;
-    background: var(--accent);
-    color: #0c0e12;
-    border: none;
-    border-radius: 999px;
-    font-family: "Manrope", "Segoe UI", sans-serif;
+    padding: 9px 12px;
+    background-color: var(--ink);
+    color: var(--card-bg);
+    border: 1px solid var(--ink);
+    border-radius: 3px;
+    font-family: var(--font-ui);
     font-size: 13px;
-    font-weight: 700;
+    font-weight: 500;
     cursor: pointer;
-    transition: background 0.2s, color 0.2s;
+    transition: background-color 0.15s, color 0.15s, border-color 0.15s;
     appearance: none;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%230c0e12' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 10 10'%3E%3Cpath fill='none' stroke='%23888888' stroke-width='1.5' d='M2 3.5l3 3 3-3'/%3E%3C/svg%3E");
     background-repeat: no-repeat;
-    background-position: right 14px center;
-    padding-right: 36px;
+    background-position: right 12px center;
+    padding-right: 32px;
 }
 
 .download-select:hover {
-    background-color: #ffc233;
+    background-color: transparent;
+    color: var(--text-color);
+    border-color: var(--border-strong);
 }
 
 .download-select option {
@@ -814,9 +922,10 @@ svg {
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 11px;
+    font-family: var(--font-mono);
+    font-size: 10.5px;
     color: var(--text-muted);
-    opacity: 0.6;
+    opacity: 0.8;
 }
 
 .page-footer a {
@@ -852,15 +961,17 @@ svg {
 .mobile-warning-box button {
     padding: 10px 24px;
     background: transparent;
-    border: 1px solid var(--accent);
-    border-radius: 8px;
-    color: var(--accent);
+    border: 1px solid var(--border-strong);
+    border-radius: 3px;
+    color: var(--text-color);
+    font-family: var(--font-ui);
     font-size: 14px;
     cursor: pointer;
 }
 
 .mobile-warning-box button:hover {
-    background: rgba(31, 201, 194, 0.1);
+    border-color: var(--accent);
+    color: var(--accent);
 }
 
 /* ── Sidebar overlay (mobile backdrop) ─────────────────────────── */

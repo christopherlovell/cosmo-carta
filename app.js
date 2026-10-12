@@ -189,8 +189,6 @@ const plotBg = g.insert('rect', ':first-child')
 // Rubber-band selection rect (last child of g, above data, no pointer events)
 const selectionRect = g.append('rect')
     .attr('class', 'zoom-selection-rect')
-    .attr('fill', 'rgba(100, 150, 255, 0.15)')
-    .attr('stroke', '#88aaff')
     .attr('stroke-dasharray', '4 2')
     .attr('stroke-width', 1.5)
     .attr('pointer-events', 'none')
@@ -516,31 +514,35 @@ function getSizeYValue(sim) {
     }
 }
 
+// Data colours live in styles.css as theme tokens (--dmo, --z0, --z3, --z6, --sim-default)
+function cssVar(name) {
+    return getComputedStyle(document.body).getPropertyValue(name).trim();
+}
+
 function defaultSimColor() {
-    return document.querySelector('.chart-container').classList.contains('dark')
-        ? '#c8cdd4'
-        : '#333333';
+    return cssVar('--sim-default');
 }
 
-// Colorscale for final redshift
-const redshiftColorScaleDark = d3.scaleLinear()
-    .domain([0, 3, 6])
-    .range(['#f0f0f0', '#ff8800', '#cc2200'])
-    .clamp(true);
+function dmoColor() {
+    return cssVar('--dmo');
+}
 
-const redshiftColorScaleBright = d3.scaleLinear()
-    .domain([0, 3, 6])
-    .range(['#000000', '#ff8800', '#cc2200'])
-    .clamp(true);
-
+// Colorscale for final redshift, rebuilt per render so it follows the theme
+let redshiftColorScale = null;
 function getRedshiftColorScale() {
-    return document.getElementById('dark-chart').checked
-        ? redshiftColorScaleBright
-        : redshiftColorScaleDark;
+    return redshiftColorScale;
 }
+
+function refreshRedshiftColorScale() {
+    redshiftColorScale = d3.scaleLinear()
+        .domain([0, 3, 6])
+        .range([cssVar('--z0'), cssVar('--z3'), cssVar('--z6')])
+        .clamp(true);
+}
+refreshRedshiftColorScale();
 
 function simColor(sim) {
-    if (sim.dmo) return 'purple';
+    if (sim.dmo) return dmoColor();
     return getRedshiftColorScale()(sim.redshift_end ?? 0);
 }
 
@@ -603,6 +605,7 @@ function dateKey(sim) {
 }
 
 function render() {
+    refreshRedshiftColorScale();
     const filterPeriodic = document.getElementById('filter-periodic').checked;
     const filterZoom = document.getElementById('filter-zoom').checked;
     const filterRT = document.getElementById('filter-rt').checked;
@@ -1205,7 +1208,7 @@ function render() {
             .attr('cx', 10)
             .attr('cy', 10)
             .attr('r', 5)
-            .attr('fill', 'purple');
+            .attr('fill', dmoColor());
 
         dmoItem.append('span')
             .attr('class', 'icon-key-label')
@@ -1669,6 +1672,7 @@ tooltip.on('click', event => event.stopPropagation());
 
 document.getElementById('dark-chart').addEventListener('change', (e) => {
     document.querySelector('.chart-container').classList.toggle('dark', !e.target.checked);
+    document.body.classList.toggle('bright', e.target.checked);
     render();
 });
 
@@ -1892,6 +1896,7 @@ document.getElementById('reset-all').addEventListener('click', () => {
     document.getElementById('show-effective-volume').checked = false;
     document.getElementById('dark-chart').checked = false;
     document.querySelector('.chart-container').classList.add('dark');
+    document.body.classList.remove('bright');
 
     // Sounds off
     document.getElementById('play-sounds').checked = false;
