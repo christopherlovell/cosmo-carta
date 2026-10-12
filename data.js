@@ -534,6 +534,7 @@ const familySound = {
     'CAMELS': 'family-camels-camel.mp3',
     'CROCODILE': 'family-crocodile-roar.mp3',
     'DREAMS': 'family-dreams-snore.mp3',
+    'Quijote': 'family-quijote-horse.mp3',
     'OWLS': 'family-owls-hoot.mp3',
     'SIMBA': 'family-simba-mufasa-lionking.mp3',
     'MUFASA': 'family-simba-mufasa-lionking.mp3',
