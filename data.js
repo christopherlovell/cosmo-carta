@@ -5,6 +5,9 @@ const simulationFamilies = {
         'EAGLE-L025N0752': {size: 25, m_g: 2.26e5, m_dm: 1.21e6, n_g_part: 752, n_dm_part: 752, code: 'Gadget-3', 'radiative-transfer': false, complete: true, redshift_end: 0.0, periodic: true, year: 2015, month: 'January', ads: 'https://ui.adsabs.harvard.edu/abs/2015MNRAS.446..521S'},
         'EAGLE-L050N0752': {size: 50, m_g: 1.81e6, m_dm: 9.7e6, n_g_part: 752, n_dm_part: 752, code: 'Gadget-3', 'radiative-transfer': false, complete: true, redshift_end: 0.0, periodic: true, year: 2015, month: 'January', ads: 'https://ui.adsabs.harvard.edu/abs/2015MNRAS.446..521S'},
         'EAGLE-L025N0376': {size: 25, m_g: 1.81e6, m_dm: 9.7e6, n_g_part: 376, n_dm_part: 376, code: 'Gadget-3', 'radiative-transfer': false, complete: true, redshift_end: 0.0, periodic: true, year: 2015, month: 'January', ads: 'https://ui.adsabs.harvard.edu/abs/2015MNRAS.446..521S'},
+        'EAGLE-L012N0376': {size: 12.5, m_g: 2.26e5, m_dm: 1.21e6, n_g_part: 376, n_dm_part: 376, code: 'Gadget-3', 'radiative-transfer': false, complete: true, redshift_end: 0.0, periodic: true, year: 2015, month: 'January', ads: 'https://ui.adsabs.harvard.edu/abs/2015MNRAS.446..521S'},
+        'E-MOSAICS-L034N1034': {size: 34.4, m_g: 2.26e5, m_dm: 1.21e6, n_g_part: 1034, n_dm_part: 1034, code: 'Gadget-3', 'radiative-transfer': false, complete: true, redshift_end: 0.0, periodic: true, year: 2020, month: 'October', ads: 'https://ui.adsabs.harvard.edu/abs/2020MNRAS.498.1050B'}, // Bastian et al.; EAGLE Recal model + MOSAICS star clusters
+        'EAGLE-L020N1024': {size: 20, m_g: 3.68e4/0.6777, m_dm: 1.98e5/0.6777, n_g_part: 1024, n_dm_part: 1024, code: 'Gadget-3', 'radiative-transfer': false, complete: true, redshift_end: 0.0, periodic: true, year: 2020, month: 'November', ads: 'https://ui.adsabs.harvard.edu/abs/2020MNRAS.498.4887B'}, // Benitez-Llambay & Frenk; masses quoted in h^-1 Msun, Planck h
         'FLARES': {size: ((4/3)*3.141*(14/0.6771)**3)**(1/3), m_g: 1.81e6, m_dm: 9.7e6, n_g_part: 2223, n_dm_part: 2223, code: 'Gadget-3', 'radiative-transfer': false, complete: true, redshift_end: 5.0, periodic: false, suite: true, n_sims: 40, year: 2021, month: '', effective_volume: 3200, ads: 'https://ui.adsabs.harvard.edu/abs/2021MNRAS.500.2127L/abstract', dust: false}
     },
     'IllustrisTNG': {
@@ -29,14 +32,23 @@ const simulationFamilies = {
         'MUFASA-m12.5n512': {size: 12.5/0.7, m_g: 2.85e5, m_dm: 1.5e6, n_g_part: 512, n_dm_part: 512, code: 'GIZMO', 'radiative-transfer': false, complete: true, redshift_end: 0.0, periodic: true, year: 2019, month: 'June', ads: 'https://arxiv.org/abs/1604.01418'}
     },
     'THESAN': {
-        'THESAN-1': {size: 95.5, m_g: 5.82e5, m_dm: 3.12e6, n_g_part: 2100, n_dm_part: 2100, code: 'Arepo', 'radiative-transfer': true, complete: true, redshift_end: 5.5, periodic: true, year: 2022, month: 'April', dust: true, ads: 'https://ui.adsabs.harvard.edu/abs/2022MNRAS.511.4005K/abstract'},
-        'THESAN-2': {size: 95.5, m_g: 4.66e6, m_dm: 2.49e7, n_g_part: 1050, n_dm_part: 1050, code: 'Arepo', 'radiative-transfer': true, complete: true, redshift_end: 5.5, periodic: true, year: 2022, month: 'April', dust: true, ads: 'https://ui.adsabs.harvard.edu/abs/2022MNRAS.511.4005K/abstract'}
+        'THESAN-1': {size: 95.5, m_g: 5.82e5, m_dm: 3.12e6, n_g_part: 2100, n_dm_part: 2100, code: 'Arepo', 'radiative-transfer': true, mhd: true, complete: true, redshift_end: 5.5, periodic: true, year: 2022, month: 'April', dust: true, ads: 'https://ui.adsabs.harvard.edu/abs/2022MNRAS.511.4005K/abstract'},
+        'THESAN-2': {size: 95.5, m_g: 4.66e6, m_dm: 2.49e7, n_g_part: 1050, n_dm_part: 1050, code: 'Arepo', 'radiative-transfer': true, mhd: true, complete: true, redshift_end: 5.5, periodic: true, year: 2022, month: 'April', dust: true, ads: 'https://ui.adsabs.harvard.edu/abs/2022MNRAS.511.4005K/abstract'},
+        'THESAN-HR': {size: 11.8, m_g: 9.04e4, m_dm: 4.82e5, n_g_part: 512, n_dm_part: 512, code: 'Arepo', 'radiative-transfer': true, mhd: true, complete: true, redshift_end: 5.5, periodic: true, year: 2024, month: 'January', dust: true, ads: 'https://ui.adsabs.harvard.edu/abs/2024MNRAS.527.2835S'} // Shen et al.; CDM run of the THESAN-HR alternative-dark-matter suite
     },
     'FLAMINGO': {
         'FLAMINGO-L1_m8': {size: 1000, m_g: 1.34e8, m_dm: 7.06e8, n_g_part: 3600, n_dm_part: 3600, code: 'SWIFT', 'radiative-transfer': false, complete: true, redshift_end: 0.0, periodic: true, year: 2023, month: '', dust: false, ads: 'https://arxiv.org/abs/2306.04024'},
         'FLAMINGO-L1_m9': {size: 1000, m_g: 1.07e9, m_dm: 5.65e9, n_g_part: 1800, n_dm_part: 1800, code: 'SWIFT', 'radiative-transfer': false, complete: true, redshift_end: 0.0, periodic: true, year: 2023, month: '', dust: false, ads: 'https://arxiv.org/abs/2306.04024'},
         'FLAMINGO-L1_m10': {size: 1000, m_g: 8.56e9, m_dm: 4.52e10, n_g_part: 900, n_dm_part: 500, code: 'SWIFT', 'radiative-transfer': false, complete: true, redshift_end: 0.0, periodic: true, year: 2023, month: '', dust: false, ads: 'https://arxiv.org/abs/2306.04024'},
-        'FLAMINGO-L2p8_m9': {size: 2800, m_g: 1.07e9, m_dm: 5.65e9, n_g_part: 5040, n_dm_part: 5040, code: 'SWIFT', 'radiative-transfer': false, complete: true, redshift_end: 0.0, periodic: true, year: 2023, month: '', dust: false, ads: 'https://arxiv.org/abs/2306.04024'}
+        'FLAMINGO-L2p8_m9': {size: 2800, m_g: 1.07e9, m_dm: 5.65e9, n_g_part: 5040, n_dm_part: 5040, code: 'SWIFT', 'radiative-transfer': false, complete: true, redshift_end: 0.0, periodic: true, year: 2023, month: '', dust: false, ads: 'https://arxiv.org/abs/2306.04024'},
+        // Gravity-only counterparts (Schaye et al. 2023, Table 3); CDM particle masses in Msun, neutrino particles not counted
+        'FLAMINGO-L1_m8_DMO':    {size: 1000,  m_dm: 8.40e8,  n_dm_part: 3600, code: 'SWIFT', 'radiative-transfer': false, complete: true, redshift_end: 0.0, periodic: true, dmo: true, year: 2023, month: '', ads: 'https://arxiv.org/abs/2306.04024'},
+        'FLAMINGO-L1_m9_DMO':    {size: 1000,  m_dm: 6.72e9,  n_dm_part: 1800, code: 'SWIFT', 'radiative-transfer': false, complete: true, redshift_end: 0.0, periodic: true, dmo: true, year: 2023, month: '', ads: 'https://arxiv.org/abs/2306.04024'},
+        'FLAMINGO-L1_m10_DMO':   {size: 1000,  m_dm: 5.38e10, n_dm_part: 900,  code: 'SWIFT', 'radiative-transfer': false, complete: true, redshift_end: 0.0, periodic: true, dmo: true, year: 2023, month: '', ads: 'https://arxiv.org/abs/2306.04024'},
+        'FLAMINGO-L2p8_m9_DMO':  {size: 2800,  m_dm: 6.72e9,  n_dm_part: 5040, code: 'SWIFT', 'radiative-transfer': false, complete: true, redshift_end: 0.0, periodic: true, dmo: true, year: 2023, month: '', ads: 'https://arxiv.org/abs/2306.04024'},
+        'FLAMINGO-L5p6_m10_DMO': {size: 5600,  m_dm: 5.38e10, n_dm_part: 5040, code: 'SWIFT', 'radiative-transfer': false, complete: true, redshift_end: 0.0, periodic: true, dmo: true, year: 2023, month: '', ads: 'https://arxiv.org/abs/2306.04024'},
+        'FLAMINGO-L11p2_m11_DMO':{size: 11200, m_dm: 4.30e11, n_dm_part: 5040, code: 'SWIFT', 'radiative-transfer': false, complete: true, redshift_end: 0.0, periodic: true, dmo: true, year: 2023, month: '', ads: 'https://arxiv.org/abs/2306.04024'},
+        'FLAMINGO-10K':          {size: 2800,  m_dm: 6.72e9/8, n_dm_part: 10080, code: 'SWIFT', 'radiative-transfer': false, complete: true, redshift_end: 0.0, periodic: true, dmo: true, year: 2025, month: 'July', ads: 'https://ui.adsabs.harvard.edu/abs/2025MNRAS.541L..22S'} // Sawala et al. (Schaller et al. in prep.); L2p8_m9 phases with 8x more CDM particles (10080^3 + 5600^3 neutrinos)
     },
     'MillenniumTNG': {
         'MTNG740': {size: 740, m_g: 3.1e7, m_dm: 1.7e8, n_g_part: 4320, n_dm_part: 4320, code: 'Arepo', 'radiative-transfer': false, complete: true, redshift_end: 0.0, periodic: true, year: 2023, month: '', ads: 'https://arxiv.org/abs/2210.10060', dust: false},
@@ -50,10 +62,14 @@ const simulationFamilies = {
         'Millennium-Gas':  {size: 500/0.73, m_g: 3.12e9/0.73, m_dm: 1.422e10/0.73, code: 'Gadget-2', 'radiative-transfer': false, complete: true, redshift_end: 0.0, periodic: true, year: 2008, month: '', ads: 'https://arxiv.org/abs/0710.3698', dust: false} // Hartley et al.; 5e8 gas + 5e8 DM particles in the Millennium volume; GO, PC and FO physics variants
     },
     'COLIBRE': {
-        // 'COLIBRE-L050m5': {size: 50, m_g: 2.3e5, code: 'SWIFT', 'radiative-transfer': false, complete: true, redshift_end: 0.0, periodic: true, year: 2025, month: '', ads: 'https://arxiv.org/abs/2508.21126'},
-        'COLIBRE-L100m5': {size: 100, m_g: 2.3e5, m_dm: 3.03e5, n_g_part: 3008, n_dm_part: 4*3008, code: 'SWIFT', 'radiative-transfer': false, complete: true, redshift_end: 0.0, periodic: true, dust: true, year: 2025, month: '', ads: 'https://arxiv.org/abs/2508.21126'},
+        'COLIBRE-L050m5': {size: 50, m_g: 2.3e5, m_dm: 3.03e5, n_g_part: 1504, n_dm_part: 4*1504, code: 'SWIFT', 'radiative-transfer': false, complete: true, redshift_end: 0.0, periodic: true, dust: true, year: 2026, month: '', ads: 'https://arxiv.org/abs/2508.21126'}, // reached z=0 in 2026 (M. Schaller's compilation)
+        'COLIBRE-L100m5': {size: 100, m_g: 2.3e5, m_dm: 3.03e5, n_g_part: 3008, n_dm_part: 4*3008, code: 'SWIFT', 'radiative-transfer': false, complete: true, redshift_end: 1.25, periodic: true, dust: true, year: 2025, month: '', ads: 'https://arxiv.org/abs/2508.21126'}, // still running; at z=1.25 as of Oct 2026 (M. Schaller's compilation)
         'COLIBRE-L200m6': {size: 200, m_g: 1.84e6, m_dm: 2.42e6, n_g_part: 3008, n_dm_part: 4*3008, code: 'SWIFT', 'radiative-transfer': false, complete: true, redshift_end: 0.0, periodic: true, dust: true, year: 2025, month: '', ads: 'https://arxiv.org/abs/2508.21126'},
-        'COLIBRE-L400m7': {size: 400, m_g: 1.47e7, m_dm: 1.94e7, n_g_part: 3008, n_dm_part: 4*3008, code: 'SWIFT', 'radiative-transfer': false, complete: true, redshift_end: 0.0, periodic: true, dust: true, year: 2025, month: '', ads: 'https://arxiv.org/abs/2508.21126'}
+        'COLIBRE-L400m7': {size: 400, m_g: 1.47e7, m_dm: 1.94e7, n_g_part: 3008, n_dm_part: 4*3008, code: 'SWIFT', 'radiative-transfer': false, complete: true, redshift_end: 0.0, periodic: true, dust: true, year: 2025, month: '', ads: 'https://arxiv.org/abs/2508.21126'},
+        // DMO counterparts: same phases and particle count, with the baryon particles turned into CDM (so two particle masses; m_dm quotes the CDM species)
+        'COLIBRE-L100m5_DMO': {size: 100, m_dm: 3.03e5, n_dm_part: 5*3008, code: 'SWIFT', 'radiative-transfer': false, complete: true, redshift_end: 0.0, periodic: true, dmo: true, year: 2025, month: '', ads: 'https://arxiv.org/abs/2508.21126'},
+        'COLIBRE-L200m6_DMO': {size: 200, m_dm: 2.42e6, n_dm_part: 5*3008, code: 'SWIFT', 'radiative-transfer': false, complete: true, redshift_end: 0.0, periodic: true, dmo: true, year: 2025, month: '', ads: 'https://arxiv.org/abs/2508.21126'},
+        'COLIBRE-L400m7_DMO': {size: 400, m_dm: 1.94e7, n_dm_part: 5*3008, code: 'SWIFT', 'radiative-transfer': false, complete: true, redshift_end: 0.0, periodic: true, dmo: true, year: 2025, month: '', ads: 'https://arxiv.org/abs/2508.21126'}
     },
     'MassiveBlack': {
         // Masses in h^-1 M_sun converted with h=0.7; box in h^-1 Mpc / 0.7
@@ -87,9 +103,10 @@ const simulationFamilies = {
     },
     'FIREbox': {
         // Feldmann et al. (2023); FIRE-2 cosmological periodic volume; h=0.677 (Planck 2015)
-        'FB1024': {code: 'GIZMO', size: 22.1, m_g: 6.26e4, 'radiative-transfer': false, complete: true, redshift_end: 0.0, periodic: true, year: 2023, month: '', ads: 'https://ui.adsabs.harvard.edu/abs/2023MNRAS.522.3831F'},
-        'FB512':  {code: 'GIZMO', size: 22.1, m_g: 5.01e5, 'radiative-transfer': false, complete: true, redshift_end: 0.0, periodic: true, year: 2023, month: '', ads: 'https://ui.adsabs.harvard.edu/abs/2023MNRAS.522.3831F'},
-        'FB256':  {code: 'GIZMO', size: 22.1, m_g: 4.01e6, 'radiative-transfer': false, complete: true, redshift_end: 0.0, periodic: true, year: 2023, month: '', ads: 'https://ui.adsabs.harvard.edu/abs/2023MNRAS.522.3831F'}
+        'FB1024': {code: 'GIZMO', mhd: true, size: 22.1, m_g: 6.26e4, 'radiative-transfer': false, complete: true, redshift_end: 0.0, periodic: true, year: 2023, month: '', ads: 'https://ui.adsabs.harvard.edu/abs/2023MNRAS.522.3831F'},
+        'FB512':  {code: 'GIZMO', mhd: true, size: 22.1, m_g: 5.01e5, 'radiative-transfer': false, complete: true, redshift_end: 0.0, periodic: true, year: 2023, month: '', ads: 'https://ui.adsabs.harvard.edu/abs/2023MNRAS.522.3831F'},
+        'FB256':  {code: 'GIZMO', mhd: true, size: 22.1, m_g: 4.01e6, 'radiative-transfer': false, complete: true, redshift_end: 0.0, periodic: true, year: 2023, month: '', ads: 'https://ui.adsabs.harvard.edu/abs/2023MNRAS.522.3831F'},
+        'FIREbox-HR': {code: 'GIZMO', mhd: true, size: 22.1, m_g: 7823, m_dm: 41899, n_g_part: 2048, n_dm_part: 2048, 'radiative-transfer': false, complete: true, redshift_end: 6.3, periodic: true, year: 2025, month: 'January', ads: 'https://ui.adsabs.harvard.edu/abs/2025MNRAS.536..988F'} // Feldmann et al.; same volume at 8x the mass resolution
     },
     'OWLS': {
         // Schaye et al. (2010); box sizes in h^-1 Mpc and masses in h^-1 M_sun (h=0.73, WMAP3)
@@ -249,7 +266,7 @@ const simulationFamilies = {
         'MACSIS':         {size: Math.cbrt(4/3*Math.PI*Math.pow(14.5, 3)), m_g: 8.0e8/0.6777, m_dm: 4.4e9/0.6777, code: 'Gadget-3', 'radiative-transfer': false, complete: true, redshift_end: 0.0, periodic: false, suite: true, n_sims: 390, year: 2017, month: '', ads: 'https://arxiv.org/abs/1607.04569'}, // Barnes et al.; BAHAMAS model; 390 clusters > 1e15 Msun from a 3.2 Gpc parent; region = 5 r200 (~14.5 Mpc for the median 10^15.4 Msun cluster, derived)
         'The Three Hundred': {size: Math.cbrt(4/3*Math.PI*Math.pow(15/0.678, 3)), m_g: 2.36e8/0.678, m_dm: 1.27e9/0.678, code: 'Gadget-3', 'radiative-transfer': false, complete: true, redshift_end: 0.0, periodic: false, suite: true, n_sims: 324, year: 2018, month: '', ads: 'https://arxiv.org/abs/1809.04622'}, // Cui et al.; GADGET-X (and GADGET-MUSIC, later GIZMO-SIMBA) on 324 regions of radius 15 h^-1 Mpc from MDPL2
         'Symphony':       {size: Math.cbrt(4/3*Math.PI*Math.pow(2.8, 3)), m_dm: 4.0e5, code: 'Gadget-2', 'radiative-transfer': false, complete: true, redshift_end: 0.0, periodic: false, suite: true, n_sims: 262, dmo: true, year: 2023, month: '', ads: 'https://arxiv.org/abs/2209.02675'}, // Nadler et al.; 262 DMO zooms across LMC, Milky Way, Group, L-Cluster and Cluster hosts; values for the 45 Milky Way hosts (region = 10 Rvir ~ 2.8 Mpc, derived)
-        'TNG-Cluster':    {size: Math.cbrt(4/3*Math.PI*Math.pow(6.0, 3)), m_g: 1.2e7, m_dm: 6.1e7, code: 'Arepo', 'radiative-transfer': false, complete: true, redshift_end: 0.0, periodic: false, suite: true, n_sims: 352, year: 2024, month: '', ads: 'https://arxiv.org/abs/2311.06338'}  // Nelson et al.; 352 clusters of 10^14.3-15.4 Msun from a 1 Gpc parent; uncontaminated to ~3 R200c (~6 Mpc for R200c ~ 2 Mpc, derived); masses stated in Msun
+        'TNG-Cluster':    {size: Math.cbrt(4/3*Math.PI*Math.pow(6.0, 3)), m_g: 1.2e7, m_dm: 6.1e7, code: 'Arepo', 'radiative-transfer': false, mhd: true, complete: true, redshift_end: 0.0, periodic: false, suite: true, n_sims: 352, year: 2024, month: '', ads: 'https://arxiv.org/abs/2311.06338'}  // Nelson et al.; 352 clusters of 10^14.3-15.4 Msun from a 1 Gpc parent; uncontaminated to ~3 R200c (~6 Mpc for R200c ~ 2 Mpc, derived); masses stated in Msun
     },
     'MultiDark': {
         // Bolshoi / MultiDark boxes; h=0.70 (WMAP) for Bolshoi and MDR1, h=0.678 (Planck) for the -PL runs. Masses in h^-1 Msun.
@@ -266,7 +283,9 @@ const simulationFamilies = {
         'Horizon-Run-1': {size: 6592/0.72,  m_dm: 2.96e11/0.72, n_dm_part: 4120, code: 'GOTPM', 'radiative-transfer': false, complete: true, redshift_end: 0.0, periodic: true, dmo: true, year: 2009, month: '', ads: 'https://arxiv.org/abs/0812.1392'},
         'Horizon-Run-2': {size: 7200/0.72,  m_dm: 1.25e11/0.72, n_dm_part: 6000, code: 'GOTPM', 'radiative-transfer': false, complete: true, redshift_end: 0.0, periodic: true, dmo: true, year: 2011, month: '', ads: 'https://arxiv.org/abs/1112.1754'},
         'Horizon-Run-3': {size: 10815/0.72, m_dm: 2.44e11/0.72, n_dm_part: 7210, code: 'GOTPM', 'radiative-transfer': false, complete: true, redshift_end: 0.0, periodic: true, dmo: true, year: 2011, month: '', ads: 'https://arxiv.org/abs/1112.1754'},
-        'Horizon-Run-4': {size: 3150/0.72,  m_dm: 9e9/0.72,     n_dm_part: 6300, code: 'GOTPM', 'radiative-transfer': false, complete: true, redshift_end: 0.0, periodic: true, dmo: true, year: 2015, month: '', ads: 'https://arxiv.org/abs/1508.05107'}
+        'Horizon-Run-4': {size: 3150/0.72,  m_dm: 9e9/0.72,     n_dm_part: 6300, code: 'GOTPM', 'radiative-transfer': false, complete: true, redshift_end: 0.0, periodic: true, dmo: true, year: 2015, month: '', ads: 'https://arxiv.org/abs/1508.05107'},
+        // Lee et al. 2021; RAMSES hydro zoom of a 1049 x 119 x 127 cMpc^3 cuboid inside a 1049 cMpc box (size = cube root of that volume). AMR gas, so m_g is the baryon-equivalent of the DM particle mass
+        'Horizon-Run-5': {size: Math.cbrt(1049*119*127), m_g: 6.9e7*0.047/0.253, m_dm: 6.9e7, code: 'RAMSES', 'radiative-transfer': false, complete: true, redshift_end: 0.625, periodic: false, year: 2021, month: 'February', ads: 'https://ui.adsabs.harvard.edu/abs/2021ApJ...908...11L'}
     },
     'MICE': {
         // Fosalba, Crocce et al.; GADGET-2, h=0.7, masses in h^-1 Msun
@@ -298,12 +317,77 @@ const simulationFamilies = {
         'nu2GC-M':  {size: 560/0.68,  m_dm: 2.20e8/0.68, n_dm_part: 4096, code: 'GreeM', 'radiative-transfer': false, complete: true, redshift_end: 0.0, periodic: true, dmo: true, year: 2015, month: '', ads: 'https://arxiv.org/abs/1412.2860'},
         'nu2GC-H2': {size: 70/0.68,   m_dm: 3.44e6/0.68, n_dm_part: 2048, code: 'GreeM', 'radiative-transfer': false, complete: true, redshift_end: 0.0, periodic: true, dmo: true, year: 2015, month: '', ads: 'https://arxiv.org/abs/1412.2860'}
     },
+    'BlueTides': {
+        'BlueTides': {size: 400/0.697, m_g: 2.36e6/0.697, m_dm: 1.2e7/0.697, n_g_part: 7040, n_dm_part: 7040, code: 'MP-Gadget', 'radiative-transfer': false, dust: false, complete: true, redshift_end: 8.0, periodic: true, year: 2016, month: 'January', ads: 'https://ui.adsabs.harvard.edu/abs/2016MNRAS.455.2778F'} // Feng et al.; Table 1 masses in h^-1 Msun, h=0.697
+    },
+    'BonFIRE': {
+        // Samuel et al. 2026; FIRE-3 early-Universe suite. CampFIRE runs resimulate a (5 cMpc)^3 subregion of BonFIRE at higher resolution
+        'BonFIRE':      {size: 41.2, m_g: 5.1e4, m_dm: 2.7e5, n_g_part: 2048, n_dm_part: 2048, code: 'GIZMO', 'radiative-transfer': false, complete: true, redshift_end: 8.9, periodic: true, year: 2026, month: 'May', ads: 'https://ui.adsabs.harvard.edu/abs/2026arXiv260524104S'},
+        'CampFIRE-6k':  {size: 5, m_g: 6.3e3, m_dm: 3.4e4, n_g_part: 500, n_dm_part: 500, code: 'GIZMO', 'radiative-transfer': false, complete: true, redshift_end: 6.0, periodic: false, year: 2026, month: 'May', ads: 'https://ui.adsabs.harvard.edu/abs/2026arXiv260524104S'},
+        'CampFIRE-800': {size: 5, m_g: 8.0e2, m_dm: 4.7e3, n_g_part: 1000, n_dm_part: 1000, code: 'GIZMO', 'radiative-transfer': false, complete: true, redshift_end: 8.9, periodic: false, year: 2026, month: 'May', ads: 'https://ui.adsabs.harvard.edu/abs/2026arXiv260524104S'}
+    },
+    'Lumina': {
+        // Zier et al. 2026 (Table 3); Arepo-RT, H and He reionization to z=3. DM-3000/DM-1500 are lower-resolution gravity-only reruns to z=0
+        'Lumina':         {size: 500, m_g: 3.6e6, m_dm: 1.9e7, n_g_part: 6000, n_dm_part: 6000, code: 'Arepo', 'radiative-transfer': true, complete: true, redshift_end: 3.0, periodic: true, year: 2026, month: 'May', ads: 'https://ui.adsabs.harvard.edu/abs/2026arXiv260515310Z'},
+        'Lumina-DM-3000': {size: 500, m_dm: 1.8e8, n_dm_part: 3000, code: 'Arepo', 'radiative-transfer': false, complete: true, redshift_end: 0.0, periodic: true, dmo: true, year: 2026, month: 'May', ads: 'https://ui.adsabs.harvard.edu/abs/2026arXiv260515310Z'},
+        'Lumina-DM-1500': {size: 500, m_dm: 1.4e9, n_dm_part: 1500, code: 'Arepo', 'radiative-transfer': false, complete: true, redshift_end: 0.0, periodic: true, dmo: true, year: 2026, month: 'May', ads: 'https://ui.adsabs.harvard.edu/abs/2026arXiv260515310Z'}
+    },
+    'FABLE': {
+        // Henden et al. 2018 (40 h^-1 Mpc, 2x512^3, masses in h^-1 Msun with h=0.679); Bigwood et al. 2025 XFABLE (100 h^-1 Mpc at the same resolution)
+        'FABLE':      {size: 40/0.679,  m_g: 6.4e6/0.679, m_dm: 3.4e7/0.679, n_g_part: 512,  n_dm_part: 512,  code: 'Arepo', 'radiative-transfer': false, complete: true, redshift_end: 0.0, periodic: true, year: 2018, month: 'October', ads: 'https://ui.adsabs.harvard.edu/abs/2018MNRAS.479.5385H'},
+        'XFABLE-100': {size: 100/0.6732, m_g: 9.51e6, m_dm: 5.05e7, n_g_part: 1280, n_dm_part: 1280, code: 'Arepo', 'radiative-transfer': false, complete: true, redshift_end: 0.0, periodic: true, year: 2025, month: 'September', ads: 'https://ui.adsabs.harvard.edu/abs/2025MNRAS.542.3206B'}
+    },
+    'Aurora': {
+        // Pawlik et al. 2017; Gadget + TRAPHIC radiative transfer; boxes in h^-1 Mpc (h=0.71), masses in Msun from M. Schaller's compilation
+        'Aurora-L012N0512': {size: 12.5/0.71, m_g: 2.55e5, m_dm: 1.25e6, n_g_part: 512,  n_dm_part: 512,  code: 'Gadget-3', 'radiative-transfer': true, complete: true, redshift_end: 6.0, periodic: true, year: 2017, month: 'April', ads: 'https://ui.adsabs.harvard.edu/abs/2017MNRAS.466..960P'},
+        'Aurora-L025N0512': {size: 25/0.71,   m_g: 2.04e6, m_dm: 1.0e7,  n_g_part: 512,  n_dm_part: 512,  code: 'Gadget-3', 'radiative-transfer': true, complete: true, redshift_end: 6.0, periodic: true, year: 2017, month: 'April', ads: 'https://ui.adsabs.harvard.edu/abs/2017MNRAS.466..960P'},
+        'Aurora-L050N0512': {size: 50/0.71,   m_g: 1.63e7, m_dm: 8.2e7,  n_g_part: 512,  n_dm_part: 512,  code: 'Gadget-3', 'radiative-transfer': true, complete: true, redshift_end: 6.0, periodic: true, year: 2017, month: 'April', ads: 'https://ui.adsabs.harvard.edu/abs/2017MNRAS.466..960P'},
+        'Aurora-L100N1024': {size: 100/0.71,  m_g: 1.63e7, m_dm: 8.2e7,  n_g_part: 1024, n_dm_part: 1024, code: 'Gadget-3', 'radiative-transfer': true, complete: true, redshift_end: 8.4, periodic: true, year: 2017, month: 'April', ads: 'https://ui.adsabs.harvard.edu/abs/2017MNRAS.466..960P'}
+    },
+    'Cosmic Dawn': {
+        // Ocvirk et al.; RAMSES-CUDATON fully coupled RT on a uniform grid in a 64 h^-1 Mpc box (h=0.6777). No AMR, so m_g is the mean baryon mass per cell
+        'CoDa-I':   {size: 64/0.6777, m_g: 3.49e5*0.048/0.26, m_dm: 3.49e5, n_g_part: 4096, n_dm_part: 4096, code: 'RAMSES', 'radiative-transfer': true, complete: true, redshift_end: 4.23, periodic: true, year: 2016, month: 'December', ads: 'https://ui.adsabs.harvard.edu/abs/2016MNRAS.463.1462O'},
+        'CoDa-II':  {size: 64/0.6777, m_g: 7.5e4,  m_dm: 4.07e5, n_g_part: 4096, n_dm_part: 4096, code: 'RAMSES', 'radiative-transfer': true, complete: true, redshift_end: 5.8, periodic: true, year: 2020, month: 'August', ads: 'https://ui.adsabs.harvard.edu/abs/2020MNRAS.496.4087O'},
+        'CoDa-III': {size: 64/0.6777, m_g: 9.38e3, m_dm: 5.09e4, n_g_part: 8192, n_dm_part: 8192, code: 'RAMSES', 'radiative-transfer': true, complete: true, redshift_end: 4.6, periodic: true, year: 2022, month: 'November', ads: 'https://ui.adsabs.harvard.edu/abs/2022MNRAS.516.3389L'} // Lewis et al.
+    },
+    'CROCODILE': {
+        // Oku & Nagamine 2024 (ApJ 975, 183), Kashino et al. 2025; GADGET4-Osaka SPH; boxes in h^-1 Mpc (h=0.6774), masses in Msun from M. Schaller's compilation
+        'CROCODILE-L50N512':   {size: 50/0.6774,  m_g: 1.86e7, m_dm: 9.94e7, n_g_part: 512,  n_dm_part: 512,  code: 'Gadget-4', 'radiative-transfer': false, complete: true, redshift_end: 0.0, periodic: true, year: 2024, month: 'November', ads: 'https://ui.adsabs.harvard.edu/abs/2024ApJ...975..183O'},
+        'CROCODILE-L100N1024': {size: 100/0.6774, m_g: 1.86e7, m_dm: 9.94e7, n_g_part: 1024, n_dm_part: 1024, code: 'Gadget-4', 'radiative-transfer': false, complete: true, redshift_end: 0.0, periodic: true, year: 2024, month: 'November', ads: 'https://ui.adsabs.harvard.edu/abs/2024ApJ...975..183O'},
+        'CROCODILE-L200N1024': {size: 200/0.6774, m_g: 1.49e8, m_dm: 7.95e8, n_g_part: 1024, n_dm_part: 1024, code: 'Gadget-4', 'radiative-transfer': false, complete: true, redshift_end: 0.0, periodic: true, year: 2025, month: 'December', ads: 'https://arxiv.org/abs/2512.24966'}
+    },
+    'Zoom-in Simulations': {
+        // Single regions and small resimulation suites (large suites live under 'Zoom Suites'). size is the cube root of the high-resolution
+        // region's volume: a sphere of the quoted radius, which is the uncontaminated radius at z=0 where the paper states one, otherwise an
+        // estimate from the halo radius (flagged "est."). Resolution-scaled suites quote a representative level.
+        'NewHorizon':   {size: Math.cbrt(4/3*Math.PI*Math.pow(10, 3)), m_g: 1.2e6*0.045/0.227, m_dm: 1.2e6, code: 'RAMSES', 'radiative-transfer': false, complete: true, redshift_end: 0.25, periodic: false, year: 2021, month: 'July', ads: 'https://ui.adsabs.harvard.edu/abs/2021A%26A...651A.109D'}, // Dubois et al.; 10 Mpc-radius patch of Horizon-AGN; AMR gas, m_g is the baryon-equivalent of the DM mass
+        'CLONE-Virgo':  {size: Math.cbrt(4/3*Math.PI*Math.pow(15, 3)), m_g: 3e7*0.0486/0.26, m_dm: 3e7, code: 'RAMSES', 'radiative-transfer': false, complete: true, redshift_end: 0.0, periodic: false, year: 2021, month: 'June', ads: 'https://ui.adsabs.harvard.edu/abs/2021MNRAS.504.2998S'}, // Sorce et al.; constrained Virgo replica, ~15 Mpc zoom sphere; AMR gas
+        'APOSTLE-L1':   {size: Math.cbrt(4/3*Math.PI*Math.pow(2.5, 3)), m_g: 1.0e4, m_dm: 5.0e4, code: 'Gadget-3', 'radiative-transfer': false, complete: true, redshift_end: 0.0, periodic: false, suite: true, n_sims: 2, year: 2016, month: 'April', ads: 'https://ui.adsabs.harvard.edu/abs/2016MNRAS.457.1931S'}, // Sawala et al.; EAGLE model, >=2.5 Mpc high-res sphere; AP-1 and AP-4 at L1
+        'APOSTLE-L2':   {size: Math.cbrt(4/3*Math.PI*Math.pow(2.5, 3)), m_g: 1.2e5, m_dm: 5.9e5, code: 'Gadget-3', 'radiative-transfer': false, complete: true, redshift_end: 0.0, periodic: false, suite: true, n_sims: 12, year: 2016, month: 'April', ads: 'https://ui.adsabs.harvard.edu/abs/2016MNRAS.457.1931S'}, // 12 Local Group volumes
+        'VVV-L0':       {size: 738, m_dm: 1.5e9, n_dm_part: 2154, code: 'Gadget-4', 'radiative-transfer': false, complete: true, redshift_end: 0.0, periodic: true, dmo: true, year: 2020, month: 'September', ads: 'https://ui.adsabs.harvard.edu/abs/2020Natur.585...39W'}, // Wang et al.; base level (Millennium-like box, Planck cosmology) of the Voids-within-Voids-within-Voids zooms
+        'VVV-L1':       {size: Math.cbrt(4/3*Math.PI*Math.pow(52, 3)), m_dm: 7.4e5, code: 'Gadget-4', 'radiative-transfer': false, complete: true, redshift_end: 0.0, periodic: false, dmo: true, year: 2020, month: 'September', ads: 'https://ui.adsabs.harvard.edu/abs/2020Natur.585...39W'}, // Extended Data Table 1: R_high = 52 Mpc
+        'VVV-L2':       {size: Math.cbrt(4/3*Math.PI*Math.pow(8.8, 3)), m_dm: 1.5e3, code: 'Gadget-4', 'radiative-transfer': false, complete: true, redshift_end: 0.0, periodic: false, dmo: true, year: 2020, month: 'September', ads: 'https://ui.adsabs.harvard.edu/abs/2020Natur.585...39W'}, // levels L3-L8c (R_high 1 Mpc to 240 pc, m_p 2.8 Msun to 1.6e-11 Msun) lie far off the plotted range and are omitted
+        'Aquarius-A-1': {size: Math.cbrt(4/3*Math.PI*Math.pow(1.0, 3)), m_dm: 1.712e3, code: 'Gadget-3', 'radiative-transfer': false, complete: true, redshift_end: 0.0, periodic: false, dmo: true, year: 2008, month: 'December', ads: 'https://ui.adsabs.harvard.edu/abs/2008MNRAS.391.1685S'}, // Springel et al.; MW-mass halo, 1.5e9 particles; ~1 Mpc clean radius (est., ~2 r50)
+        'Aquarius-L2':  {size: Math.cbrt(4/3*Math.PI*Math.pow(1.0, 3)), m_dm: 1.0e4, code: 'Gadget-3', 'radiative-transfer': false, complete: true, redshift_end: 0.0, periodic: false, dmo: true, suite: true, n_sims: 6, year: 2008, month: 'December', ads: 'https://ui.adsabs.harvard.edu/abs/2008MNRAS.391.1685S'}, // haloes A-F at level 2 (6.4e3-1.4e4 Msun)
+        'Phoenix-A-1':  {size: Math.cbrt(4/3*Math.PI*Math.pow(6.0, 3)), m_dm: 6.355e5/0.73, code: 'Gadget-3', 'radiative-transfer': false, complete: true, redshift_end: 0.0, periodic: false, dmo: true, year: 2012, month: 'September', ads: 'https://ui.adsabs.harvard.edu/abs/2012MNRAS.425.2169G'}, // Gao et al.; cluster zoom from the Millennium box, masses in h^-1 Msun; ~3 r200 clean radius (est.)
+        'Phoenix-L2':   {size: Math.cbrt(4/3*Math.PI*Math.pow(6.0, 3)), m_dm: 5.084e6/0.73, code: 'Gadget-3', 'radiative-transfer': false, complete: true, redshift_end: 0.0, periodic: false, dmo: true, suite: true, n_sims: 9, year: 2012, month: 'September', ads: 'https://ui.adsabs.harvard.edu/abs/2012MNRAS.425.2169G'}, // 9 clusters at level 2 (4.4e6-1.8e7 h^-1 Msun; Ph-A-2 quoted)
+        'ELVIS':        {size: Math.cbrt(4/3*Math.PI*Math.pow(1.56, 3)), m_dm: 1.9e5, code: 'Gadget-3', 'radiative-transfer': false, complete: true, redshift_end: 0.0, periodic: false, dmo: true, suite: true, n_sims: 36, year: 2014, month: 'March', ads: 'https://ui.adsabs.harvard.edu/abs/2014MNRAS.438.2578G'}, // Garrison-Kimmel et al.; 12 LG pairs + 24 isolated hosts; median uncontaminated radius 1.56 Mpc
+        'NIHAO':        {size: Math.cbrt(4/3*Math.PI*Math.pow(0.8, 3)), m_g: 3.166e5, m_dm: 1.735e6, code: 'Gasoline2', 'radiative-transfer': false, complete: true, redshift_end: 0.0, periodic: false, suite: true, n_sims: 88, year: 2015, month: 'November', ads: 'https://ui.adsabs.harvard.edu/abs/2015MNRAS.454...83W'}, // Wang et al.; resolution scales with halo mass (m_dm 3.4e3-1.7e6); MW-mass level quoted, ~3 r200 clean radius (est.)
+        'Auriga-L4':    {size: Math.cbrt(4/3*Math.PI*Math.pow(1.0, 3)), m_g: 5e4, m_dm: 3e5, code: 'Arepo', 'radiative-transfer': false, mhd: true, complete: true, redshift_end: 0.0, periodic: false, suite: true, n_sims: 30, year: 2017, month: 'May', ads: 'https://ui.adsabs.harvard.edu/abs/2017MNRAS.467..179G'}, // Grand et al.; 30 MW-mass haloes from the EAGLE DMO box; high-res Lagrangian region within 4 R200 (~1 Mpc)
+        'Auriga-L3':    {size: Math.cbrt(4/3*Math.PI*Math.pow(1.0, 3)), m_g: 6e3, m_dm: 4e4, code: 'Arepo', 'radiative-transfer': false, mhd: true, complete: true, redshift_end: 0.0, periodic: false, suite: true, n_sims: 3, year: 2017, month: 'May', ads: 'https://ui.adsabs.harvard.edu/abs/2017MNRAS.467..179G'}, // Au6, Au16, Au24
+        'FIRE-2 Latte': {size: Math.cbrt(4/3*Math.PI*Math.pow(0.6, 3)), m_g: 7070, m_dm: 3.5e4, code: 'GIZMO', 'radiative-transfer': false, complete: true, redshift_end: 0.0, periodic: false, suite: true, n_sims: 3, year: 2016, month: 'August', ads: 'https://ui.adsabs.harvard.edu/abs/2016ApJ...827L..23W'}, // Wetzel et al.; m12i/m12f/m12m; zero contamination within 600 kpc
+        'Hydrangea':    {size: Math.cbrt(4/3*Math.PI*Math.pow(15, 3)), m_g: 1.81e6, m_dm: 9.7e6, code: 'Gadget-3', 'radiative-transfer': false, complete: true, redshift_end: 0.0, periodic: false, suite: true, n_sims: 24, year: 2017, month: 'October', ads: 'https://ui.adsabs.harvard.edu/abs/2017MNRAS.470.4186B'}, // Bahe et al.; C-EAGLE clusters clean to 10 r200c (10-28 Mpc, median ~15)
+        'HESTIA-8192':  {size: Math.cbrt(4/3*Math.PI*Math.pow(3.7, 3)), m_g: 2.2e4, m_dm: 1.5e5, code: 'Arepo', 'radiative-transfer': false, mhd: true, complete: true, redshift_end: 0.0, periodic: false, suite: true, n_sims: 3, year: 2020, month: 'October', ads: 'https://ui.adsabs.harvard.edu/abs/2020MNRAS.498.2968L'}, // Libeskind et al.; constrained Local Groups, Auriga model; two 2.5 h^-1 Mpc spheres
+        'HESTIA-4096':  {size: Math.cbrt(4/3*Math.PI*Math.pow(6.0, 3)), m_g: 1.8e5, m_dm: 1.2e6, code: 'Arepo', 'radiative-transfer': false, mhd: true, complete: true, redshift_end: 0.0, periodic: false, suite: true, n_sims: 13, year: 2020, month: 'October', ads: 'https://ui.adsabs.harvard.edu/abs/2020MNRAS.498.2968L'} // ~4 h^-1 Mpc uncontaminated radius
+    },
     'Individual Hydrodynamical Simulations': {
         'Astrid': {size: 250/0.7, m_g: 1.27e6/0.7, m_dm: 9.63e6, n_g_part: 5500, n_dm_part: 5500, code: 'MP-Gadget', 'radiative-transfer': false, dust: false, complete: true, redshift_end: 3.0, periodic: true, year: 2022, month: '', ads: 'https://arxiv.org/abs/2111.01160'},
         'Horizon-AGN': {code: 'RAMSES', size: 120, m_g: 4e6, 'radiative-transfer': false, complete: true, redshift_end: 0.0, periodic: true, year: 2014, month: '', ads: 'https://ui.adsabs.harvard.edu/abs/2014MNRAS.444.1453D'},
         'BAHAMAS': {code: 'Gadget-3', size: 560, m_g: 1.5e9, 'radiative-transfer': false, complete: true, redshift_end: 0.0, periodic: true, year: 2017, month: '', ads: 'https://arxiv.org/abs/1603.02702'},
         'SPHINX': {code: 'RAMSES-RT', size: 20, m_g: 3.8e4, 'radiative-transfer': true, complete: true, redshift_end: 4.6, periodic: true, year: 2018, month: '', ads: 'https://arxiv.org/abs/2207.03232'}, // SPHINX20 (Rosdahl et al. 2022)
-        'FRONTIER-E': {code: 'CRK-HACC', size: 4700, m_g: 1e8, 'radiative-transfer': false, complete: true, redshift_end: 0.0, periodic: true, year: 2025, month: '', ads: 'https://arxiv.org/abs/2510.03557'},
+        'FRONTIER-E': {code: 'CRK-HACC', size: 4655.6, m_g: 3.1e8, m_dm: 1.7e9, n_g_part: 12600, n_dm_part: 12600, 'radiative-transfer': false, complete: true, redshift_end: 0.0, periodic: true, year: 2025, month: 'October', ads: 'https://arxiv.org/abs/2510.03557'}, // Frontiere et al.; 4 trillion particles; masses from Frontiere et al. 2025b Table 3
+        'CRK-HACC-L256': {code: 'CRK-HACC', size: 378.4, m_g: 3.1e8, m_dm: 1.7e9, n_g_part: 1024, n_dm_part: 1024, 'radiative-transfer': false, complete: true, redshift_end: 0.0, periodic: true, year: 2025, month: 'November', ads: 'https://arxiv.org/abs/2511.21921'}, // Frontiere et al.; 256 h^-1 Mpc calibration run at Frontier-E resolution
+        'Obsidian': {code: 'GIZMO', size: 150, m_g: 1.8e7, m_dm: 9.43e7, n_g_part: 1024, n_dm_part: 1024, 'radiative-transfer': false, complete: true, redshift_end: 0.0, periodic: true, year: 2024, month: 'August', ads: 'https://ui.adsabs.harvard.edu/abs/2024MNRAS.532.4793R'}, // Rennehan et al.; Simba model with the Obsidian BH feedback
         // ── Legacy hydrodynamical runs, 1990-2004 (see also the Cen & Ostriker TVD, TreeSPH, Virgo and Springel & Hernquist families).
         // Grid codes: n_g_part is cells per side and m_g the baryon mass per cell. Pre-arXiv papers link to ADS.
         // "computed" masses use m = Omega_x * 2.775e11 * (L/N)^3 h^-1 Msun.
@@ -401,21 +485,39 @@ const simulationFamilies = {
     }
 };
 
-// Optional emoji per suite. Value is a Unicode emoji string, or a PNG filename
+// Optional emoji per suite (or per individual simulation name, e.g. FLARES). Value is a Unicode emoji string, or a PNG filename
 // loaded from the emoji/ folder (e.g. 'colibre.png'). Omit a suite to use default markers.
 const familyEmoji = {
     'EAGLE':         '🦅',
     'IllustrisTNG':  'picard.png',
     'Illustris':     '🔆',
-    'Simba':         '🦁',
+    'SIMBA':         '🦁',
     'FLAMINGO':      '🦩',
     'FLARES':        '👖',
     'MillenniumTNG': '🎆',
     'COLIBRE':       '🐦',
     'MassiveBlack':  '🖤',
+    'BlueTides':     '🌊',
+    'FABLE':         '📖',
+    'DREAMS':        '🛏️',
+    'CROCODILE':     '🐊',
+    'AbacusSummit':  '🧮',
+    'Horizon Run':   '🌅',
+    // Individual runs (looked up by simulation name)
+    'Phoenix-A-1':   '🐦‍🔥',
+    'Phoenix-L2':    '🐦‍🔥',
+    'Symphony':      '🎶',
+    'Horizon-AGN':   '🌅',
+    'NewHorizon':    '🌅',
+    'ELVIS':         '🕺',
+    'Flagship':      '🇪',
+    'EuclidEmulator1': '🇪',
+    'EuclidEmulator2': '🇪',
     'Magneticum Pathfinder':    '🧲',
     'CAMELS':        '🐪',
     'FIREbox':       '🔥',
+    'BonFIRE':       '🏕️',
+    'Lumina':        '💡',
     'OWLS':          '🦉',
     'SLOW':          '🐌',
     'Quijote':       '🏇',
@@ -425,9 +527,9 @@ const familyEmoji = {
 const codeEmoji = {
     'SWIFT': 'swift.png',
     'Arepo': '🅰️',
-    'Gadget-3': '🇬3',
+    'Gadget-3': 'gadget3.png',
     'GIZMO': 'gizmo.png',
-    'Gadget-2': '🇬2',
+    'Gadget-2': 'gadget2.png',
 };
 
 // Flatten simulations for backward compatibility

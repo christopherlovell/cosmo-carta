@@ -85,8 +85,8 @@ const clipRect = svg.append('defs').append('clipPath').attr('id', 'plot-clip')
     .append('rect').attr('x', 0).attr('y', 0);
 
 // Scales (ranges set in resizeChart)
-const xScale = d3.scaleLinear().domain([14, 3.8]);
-const yScale = d3.scaleLinear().domain([0.5, 13.5]);
+const xScale = d3.scaleLinear().domain([14, 2.5]);
+const yScale = d3.scaleLinear().domain([-0.5, 13.5]);
 
 // Tooltip
 const tooltip = d3.select('.tooltip');
@@ -127,7 +127,7 @@ const yLabel = g.append('text')
 
 // Top axis for stellar mass (range set in resizeChart)
 const xScaleTop = d3.scaleLinear()
-    .domain([calcStellarMassLimit(Math.pow(10, 14)), calcStellarMassLimit(Math.pow(10, 3.8))]);
+    .domain([calcStellarMassLimit(Math.pow(10, 14)), calcStellarMassLimit(Math.pow(10, 2.5))]);
 
 const xAxisTop = d3.axisTop(xScaleTop).ticks(6);
 const xAxisTopG = g.append('g').attr('class', 'axis');
@@ -167,8 +167,8 @@ const yearDisplayText = g.append('text')
     .style('opacity', 0);
 
 // ── Box-select zoom ──────────────────────────────────────────────
-const DEFAULT_X_DOMAIN = [14, 3.8];
-const DEFAULT_Y_DOMAIN = [0.5, 13.5];
+const DEFAULT_X_DOMAIN = [14, 2.5];
+const DEFAULT_Y_DOMAIN = [-0.5, 13.5];
 let isZoomed = false;
 let dragState = null;
 
@@ -258,6 +258,7 @@ Object.entries(simulationFamilies).forEach(([familyName, sims]) => {
 });
 
 function getSimEmoji(simName) {
+    if (familyEmoji[simName]) return familyEmoji[simName];
     const suite = simToFamily[simName];
     return suite ? (familyEmoji[suite] || null) : null;
 }
@@ -318,7 +319,7 @@ function simFrequency(sim) {
     // High resolution (low mass) → high pitch; low resolution → low pitch
     // Maps log10(mass) linearly across 3 octaves: ~1600 Hz (low mass) → ~200 Hz (high mass)
     const logMass = Math.log10(getResolutionMass(sim));
-    const t = Math.max(0, Math.min(1, (logMass - 3.8) / (12.2 - 3.8)));
+    const t = Math.max(0, Math.min(1, (logMass - 2.5) / (12.2 - 2.5)));
     const baseFreq = 1600 * Math.pow(2, -3 * t);
     return snapToPentatonic(baseFreq * Math.pow(2, soundPitchShift));
 }
@@ -462,9 +463,9 @@ function updateYAxis(mode) {
                 .map(sim => getYValue(sim))
                 .filter(v => isFinite(v));
             const maxY = Math.max(...yValues, 13.5);
-            yScale.domain([0.5, maxY + 0.3]);
+            yScale.domain([-0.5, maxY + 0.3]);
         } else {
-            yScale.domain([0.5, 13.5]);
+            yScale.domain([-0.5, 13.5]);
         }
         yLabel.html('log<tspan dy="5" font-size="11px">10</tspan><tspan dy="-5">(volume / cMpc</tspan><tspan dy="-6" font-size="11px">3</tspan><tspan dy="6">)</tspan>');
     } else {
@@ -635,6 +636,7 @@ function render() {
     };
     const emojiActive = d => !!activeEmoji(d[0]);
     const isPng = e => e && e.endsWith('.png');
+    const INVERT_ON_DARK = new Set(['swift.png']);
 
     // Filter simulations
     const filteredSims = Object.entries(simulations).filter(([name, sim]) => {
@@ -647,13 +649,15 @@ function render() {
         // Check zoom filter (zoom = not periodic)
         if (!filterZoom && !sim.periodic) return false;
 
-        // Check radiative transfer filter
-        if (!filterRT && sim['radiative-transfer']) return false;
-
-        // Check hydro / DMO filters
-        if (!filterHydro && !sim.dmo) return false;
-        if (!filterDMO && sim.dmo) return false;
-        if (!filterMHD && sim.mhd) return false;
+        // Physics categories: a run is shown if any category it belongs to is ticked,
+        // so ticking only RT (or only MHD) shows those runs without the plain hydro ones
+        if (sim.dmo) {
+            if (!filterDMO) return false;
+        } else {
+            const rt = !!sim['radiative-transfer'], mhd = !!sim.mhd;
+            const plain = !rt && !mhd;
+            if (!((plain && filterHydro) || (rt && filterRT) || (mhd && filterMHD))) return false;
+        }
 
         // Check x-axis mass availability
         if (currentXMode === 'baryon' && sim.m_g === undefined) return false;
@@ -958,7 +962,8 @@ function render() {
         })
         .style('filter', d => {
             const e = activeEmoji(d[0]);
-            return (e && isPng(e) && isDarkMode && e === getCodeEmoji(d[0]) && e !== 'gizmo.png') ? 'invert(1)' : null;
+            // Only the monochrome black PNGs get inverted on a dark chart; coloured ones keep their colours
+            return (e && isDarkMode && e === getCodeEmoji(d[0]) && INVERT_ON_DARK.has(e)) ? 'invert(1)' : null;
         });
 
     // Draw oldest first so the newest runs sit on top
@@ -1774,7 +1779,7 @@ function refreshAxes() {
 }
 
 function getDefaultYDomain() {
-    if (currentYMode === 'volume') return [0.5, 13.5];
+    if (currentYMode === 'volume') return [-0.5, 13.5];
     return calcAreaDomain();
 }
 

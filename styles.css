@@ -266,6 +266,13 @@ body.sidebar-open .main-content {
     background: var(--accent-soft);
 }
 
+.checkbox-note {
+    font-size: 11px;
+    line-height: 1.4;
+    color: var(--text-muted);
+    padding: 4px 6px 0;
+}
+
 input[type="checkbox"] {
     cursor: pointer;
     width: 14px;
