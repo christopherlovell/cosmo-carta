@@ -968,9 +968,9 @@ function render() {
     const labelData = showLegend ? filteredSims : [];
     const labelSel = labelGroup.selectAll('.point-label').data(labelData, d => d[0]);
     labelSel.exit().remove();
-    const labelAll = labelSel.enter().append('text')
-        .attr('class', 'point-label')
-        .merge(labelSel)
+    const labelEnter = labelSel.enter().append('text')
+        .attr('class', 'point-label');
+    const labelAll = labelEnter.merge(labelSel)
         .text(d => simNumberMap.get(d[0]));
 
     // Light-touch label repositioning to reduce overlaps
@@ -1010,9 +1010,11 @@ function render() {
         }
 
         const offsets = new Map(labels.map(l => [l.name, [l.ox, l.oy]]));
-        labelAll
-            .attr('x', d => pointPos(d)[0] + offsets.get(d[0])[0])
-            .attr('y', d => pointPos(d)[1] + offsets.get(d[0])[1]);
+        const labelX = d => pointPos(d)[0] + offsets.get(d[0])[0];
+        const labelY = d => pointPos(d)[1] + offsets.get(d[0])[1];
+        // New labels appear in place; existing ones glide with their points (e.g. on zoom)
+        labelEnter.attr('x', labelX).attr('y', labelY);
+        labelSel.transition().duration(400).attr('x', labelX).attr('y', labelY);
     }
 
     // ── Point interaction (shared by points, number labels and legend entries) ──
