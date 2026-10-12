@@ -492,6 +492,7 @@ const familyEmoji = {
     'IllustrisTNG':  'picard.png',
     'Illustris':     '🔆',
     'SIMBA':         '🦁',
+    'MUFASA':        '🦁',
     'FLAMINGO':      '🦩',
     'FLARES':        '👖',
     'MillenniumTNG': '🎆',
