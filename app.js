@@ -86,7 +86,7 @@ const clipRect = svg.append('defs').append('clipPath').attr('id', 'plot-clip')
 
 // Scales (ranges set in resizeChart)
 const xScale = d3.scaleLinear().domain([14, 3.8]);
-const yScale = d3.scaleLinear().domain([0.5, 12]);
+const yScale = d3.scaleLinear().domain([0.5, 13.5]);
 
 // Tooltip
 const tooltip = d3.select('.tooltip');
@@ -151,6 +151,9 @@ const effVolGroup = g.append('g').attr('class', 'effective-volume-lines');
 // Simulations group
 const simGroup = g.append('g').attr('class', 'simulations');
 
+// Point number labels (own layer so other points never occlude them)
+const labelGroup = g.append('g').attr('class', 'point-labels');
+
 // Legend group
 const legendGroup = g.append('g').attr('class', 'legend');
 
@@ -165,7 +168,7 @@ const yearDisplayText = g.append('text')
 
 // ── Box-select zoom ──────────────────────────────────────────────
 const DEFAULT_X_DOMAIN = [14, 3.8];
-const DEFAULT_Y_DOMAIN = [0.5, 12];
+const DEFAULT_Y_DOMAIN = [0.5, 13.5];
 let isZoomed = false;
 let dragState = null;
 
@@ -174,6 +177,7 @@ particleGroup.attr('clip-path', 'url(#plot-clip)');
 surveyGroup.attr('clip-path', 'url(#plot-clip)');
 effVolGroup.attr('clip-path', 'url(#plot-clip)');
 simGroup.attr('clip-path', 'url(#plot-clip)');
+labelGroup.attr('clip-path', 'url(#plot-clip)');
 
 // Transparent background rect (first child of g) — catches drag + dblclick on empty space
 const plotBg = g.insert('rect', ':first-child')
@@ -459,10 +463,10 @@ function updateYAxis(mode) {
             const yValues = Object.values(simulations)
                 .map(sim => getYValue(sim))
                 .filter(v => isFinite(v));
-            const maxY = Math.max(...yValues, 12);
+            const maxY = Math.max(...yValues, 13.5);
             yScale.domain([0.5, maxY + 0.3]);
         } else {
-            yScale.domain([0.5, 12]);
+            yScale.domain([0.5, 13.5]);
         }
         yLabel.html('log<tspan dy="5" font-size="11px">10</tspan><tspan dy="-5">(volume / cMpc</tspan><tspan dy="-6" font-size="11px">3</tspan><tspan dy="6">)</tspan>');
     } else {
@@ -591,6 +595,13 @@ function renderParticleLines() {
     }
 }
 
+const MONTH_INDEX = ['jan','feb','mar','apr','may','jun','jul','aug','sep','oct','nov','dec'];
+// Publication date as a sortable number (unknown month sorts before January)
+function dateKey(sim) {
+    const m = MONTH_INDEX.indexOf(String(sim.month || '').toLowerCase().slice(0, 3)) + 1;
+    return (sim.year || 0) * 13 + m;
+}
+
 function render() {
     const filterPeriodic = document.getElementById('filter-periodic').checked;
     const filterZoom = document.getElementById('filter-zoom').checked;
@@ -658,6 +669,50 @@ function render() {
         return selectedSims.includes(name);
     });
 
+    // Newest first: numbering, legend and draw order all follow publication date
+    filteredSims.sort((a, b) => dateKey(b[1]) - dateKey(a[1]));
+
+    // Nudge coincident/overlapping points apart (a few px at most) so each stays hoverable
+    const truePos = sim => [xScale(Math.log10(getResolutionMass(sim))), yScale(getYValue(sim))];
+    const glyphRadius = ([name, sim]) => {
+        if (emojiActive([name, sim])) return 9;
+        if (sim.suite && !sim.periodic) return 12;
+        if (!sim.periodic || sim.suite || sim['radiative-transfer']) return 8;
+        return 6;
+    };
+    const MAX_NUDGE = 14;
+    const nodes = filteredSims.map(d => {
+        const [x, y] = truePos(d[1]);
+        return { name: d[0], x0: x, y0: y, x, y, r: glyphRadius(d) };
+    });
+    const layout = d3.forceSimulation(nodes)
+        .randomSource(d3.randomLcg(42))
+        .force('x', d3.forceX(n => n.x0).strength(0.25))
+        .force('y', d3.forceY(n => n.y0).strength(0.25))
+        .force('collide', d3.forceCollide(n => n.r).strength(0.8).iterations(2))
+        .stop();
+    for (let i = 0; i < 60; i++) layout.tick();
+    const posMap = new Map(nodes.map(n => {
+        let dx = n.x - n.x0, dy = n.y - n.y0;
+        const len = Math.hypot(dx, dy);
+        if (len > MAX_NUDGE) { dx *= MAX_NUDGE / len; dy *= MAX_NUDGE / len; }
+        return [n.name, [n.x0 + dx, n.y0 + dy]];
+    }));
+    const pointPos = d => posMap.get(d[0]) || truePos(d[1]);
+    const pointTransform = (d, k = 1) => {
+        const [x, y] = pointPos(d);
+        return `translate(${x},${y}) scale(${k})`;
+    };
+    // Page coordinates of a point, for tooltips triggered away from the pointer
+    const pointPageEvent = d => {
+        const svgRect = svg.node().getBoundingClientRect();
+        const [x, y] = pointPos(d);
+        return {
+            pageX: svgRect.left + margin.left + x + window.scrollX,
+            pageY: svgRect.top + margin.top + y + window.scrollY,
+        };
+    };
+
     // If the sticky point was filtered out, clear it
     if (stickyData && !filteredSims.some(([name]) => name === stickyData[0])) {
         stickyData = null;
@@ -715,9 +770,8 @@ function render() {
     if (showEffectiveVolume) {
         const effVolSims = filteredSims.filter(([, sim]) => sim.effective_volume != null);
         effVolSims.forEach(([name, sim]) => {
-            const x = xScale(Math.log10(getResolutionMass(sim)));
+            const [x, yEff] = pointPos([name, sim]);
             const ySize = yScale(getSizeYValue(sim));
-            const yEff = yScale(getYValue(sim));
             const color = simColor(sim);
 
             // Dashed line from box size to effective volume
@@ -754,12 +808,7 @@ function render() {
 
     const pointsEnter = points.enter().append('g')
         .attr('class', 'sim-point')
-        .attr('transform', d => {
-            // Start at final position
-            const x = xScale(Math.log10(getResolutionMass(d[1])));
-            const y = yScale(getYValue(d[1]));
-            return `translate(${x},${y}) scale(0)`;
-        });
+        .attr('transform', d => pointTransform(d, 0)); // start at final position
 
     // Invisible hit area – large enough to cover the 1.5× scaled state
     // so the pointer never "leaves" during the growth animation
@@ -819,33 +868,18 @@ function render() {
             .attr('r', 2);
     }
 
-    pointsEnter.append('text')
-        .attr('class', 'point-label');
-
     // Animate new points with blob effect
     pointsEnter.transition()
         .duration(200)
-        .attr('transform', d => {
-            const x = xScale(Math.log10(getResolutionMass(d[1])));
-            const y = yScale(getYValue(d[1]));
-            return `translate(${x},${y}) scale(1.3)`;
-        })
+        .attr('transform', d => pointTransform(d, 1.3))
         .transition()
         .duration(200)
-        .attr('transform', d => {
-            const x = xScale(Math.log10(getResolutionMass(d[1])));
-            const y = yScale(getYValue(d[1]));
-            return `translate(${x},${y}) scale(1)`;
-        });
+        .attr('transform', d => pointTransform(d, 1));
 
     // Update existing points to new positions
     points.transition()
         .duration(400)
-        .attr('transform', d => {
-            const x = xScale(Math.log10(getResolutionMass(d[1])));
-            const y = yScale(getYValue(d[1]));
-            return `translate(${x},${y}) scale(1)`;
-        });
+        .attr('transform', d => pointTransform(d, 1));
 
     svg.on('click', function() {
         if (stickyData) {
@@ -853,7 +887,7 @@ function render() {
             tooltip.classed('visible', false).classed('sticky', false)
                 .style('pointer-events', 'none');
             allPoints.transition().duration(200)
-                .attr('transform', p => `translate(${xScale(Math.log10(getResolutionMass(p[1])))},${yScale(getYValue(p[1]))}) scale(1)`);
+                .attr('transform', p => pointTransform(p, 1));
         }
     });
 
@@ -924,9 +958,17 @@ function render() {
             return (e && isPng(e) && isDarkMode && e === getCodeEmoji(d[0]) && e !== 'gizmo.png') ? 'invert(1)' : null;
         });
 
-    allPoints.select('.point-label')
-        .text(d => showLegend ? simNumberMap.get(d[0]) : '')
-        .attr('opacity', showLegend ? 1 : 0);
+    // Draw oldest first so the newest runs sit on top
+    allPoints.sort((a, b) => dateKey(a[1]) - dateKey(b[1]));
+
+    // Number labels live in their own layer; hovering one brings up its point
+    const labelData = showLegend ? filteredSims : [];
+    const labelSel = labelGroup.selectAll('.point-label').data(labelData, d => d[0]);
+    labelSel.exit().remove();
+    const labelAll = labelSel.enter().append('text')
+        .attr('class', 'point-label')
+        .merge(labelSel)
+        .text(d => simNumberMap.get(d[0]));
 
     // Light-touch label repositioning to reduce overlaps
     if (showLegend) {
@@ -935,12 +977,8 @@ function render() {
 
         const labels = filteredSims.map(([name, sim]) => {
             const w = String(simNumberMap.get(name) || '').length * charW + 3;
-            return {
-                name,
-                px: xScale(Math.log10(getResolutionMass(sim))),
-                py: yScale(getYValue(sim)),
-                ox: 0, oy: defaultOy, w, h: labelH,
-            };
+            const [px, py] = pointPos([name, sim]);
+            return { name, px, py, ox: 0, oy: defaultOy, w, h: labelH };
         });
 
         for (let iter = 0; iter < 40; iter++) {
@@ -968,64 +1006,55 @@ function render() {
             });
         }
 
-        const ptSel = simGroup.selectAll('.sim-point');
-        labels.forEach(l => {
-            ptSel.filter(d => d[0] === l.name)
-                .select('.point-label')
-                .attr('x', l.ox)
-                .attr('y', l.oy);
-        });
+        const offsets = new Map(labels.map(l => [l.name, [l.ox, l.oy]]));
+        labelAll
+            .attr('x', d => pointPos(d)[0] + offsets.get(d[0])[0])
+            .attr('y', d => pointPos(d)[1] + offsets.get(d[0])[1]);
     }
 
-    allPoints.on('mouseenter', function(event, d) {
+    // ── Point interaction (shared by points, number labels and legend entries) ──
+    const pointNode = d => allPoints.filter(p => p[0] === d[0]);
+
+    const enterPoint = (d, event) => {
         playSimSound(d[1]);
-        
-        // Growth animation
-        d3.select(this).transition().duration(200)
-            .attr('transform', `translate(${xScale(Math.log10(getResolutionMass(d[1])))},${yScale(getYValue(d[1]))}) scale(1.5)`);
+        // Raise above neighbours and grow
+        pointNode(d).raise().transition().duration(200)
+            .attr('transform', pointTransform(d, 1.5));
 
         if (stickyData) return;
         tooltip.html(buildTooltipHTML(d, false))
             .classed('visible', true)
             .style('pointer-events', 'none');
         positionTooltip(event);
-    })
-    .on('mouseleave', function(event, d) {
+    };
+
+    const leavePoint = d => {
         // Only shrink if NOT sticky
         if (!stickyData || stickyData[0] !== d[0]) {
-            d3.select(this).transition().duration(200)
-                .attr('transform', `translate(${xScale(Math.log10(getResolutionMass(d[1])))},${yScale(getYValue(d[1]))}) scale(1)`);
+            pointNode(d).transition().duration(200)
+                .attr('transform', pointTransform(d, 1));
         }
-
         if (stickyData) return;
         tooltip.classed('visible', false);
-    })
-    .on('click', function(event, d) {
-        event.stopPropagation();
-        const prevStickyData = stickyData;
+    };
 
+    const clickPoint = (d, event) => {
+        event.stopPropagation();
         if (stickyData && stickyData[0] === d[0]) {
-            // Click same point — unstick
+            // Click same point — unstick (pointer is still over it, keep it grown)
             stickyData = null;
             tooltip.classed('visible', false).classed('sticky', false)
                 .style('pointer-events', 'none');
-            
-            // If mouse is still over, keep 1.5, otherwise 1.0
-            // Since this is a click, mouse is over. But we can be safe:
-            d3.select(this).transition().duration(200)
-                .attr('transform', `translate(${xScale(Math.log10(getResolutionMass(d[1])))},${yScale(getYValue(d[1]))}) scale(1.5)`);
+            pointNode(d).transition().duration(200)
+                .attr('transform', pointTransform(d, 1.5));
         } else {
             // Stick to this point (switch if another was already sticky)
             stickyData = d;
-            
-            // Unscale all points except the new sticky
-            allPoints.filter(p => !stickyData || p[0] !== stickyData[0])
+            allPoints.filter(p => p[0] !== d[0])
                 .transition().duration(200)
-                .attr('transform', p => `translate(${xScale(Math.log10(getResolutionMass(p[1])))},${yScale(getYValue(p[1]))}) scale(1)`);
-
-            // Ensure this point is scaled up
-            d3.select(this).transition().duration(200)
-                .attr('transform', `translate(${xScale(Math.log10(getResolutionMass(d[1])))},${yScale(getYValue(d[1]))}) scale(1.5)`);
+                .attr('transform', p => pointTransform(p, 1));
+            pointNode(d).raise().transition().duration(200)
+                .attr('transform', pointTransform(d, 1.5));
 
             tooltip.html(buildTooltipHTML(d, true))
                 .classed('visible', true)
@@ -1033,7 +1062,21 @@ function render() {
                 .style('pointer-events', 'auto');
             positionTooltip(event);
         }
-    });
+        // Keep legend highlighting in step
+        document.querySelectorAll('.legend-entry').forEach(node => {
+            node.classList.toggle('legend-entry-active', !!(stickyData && stickyData[0] === node.dataset.sim));
+        });
+    };
+
+    allPoints
+        .on('mouseenter', (event, d) => enterPoint(d, event))
+        .on('mouseleave', (event, d) => leavePoint(d))
+        .on('click', (event, d) => clickPoint(d, event));
+
+    labelAll
+        .on('mouseenter', (event, d) => enterPoint(d, event))
+        .on('mouseleave', (event, d) => leavePoint(d))
+        .on('click', (event, d) => clickPoint(d, event));
 
     // Render legend
     legendGroup.selectAll('*').remove();
@@ -1086,20 +1129,17 @@ function render() {
             return maxYearB - maxYearA;
         });
 
-        // Flat list for index-based active class updates
-        const legendSimsFlat = [];
-
         sortedFamilies.forEach(([family, sims]) => {
             legendDiv.append('div')
                 .attr('class', 'legend-family')
                 .text(family);
 
             sims.forEach(([name, sim]) => {
-                legendSimsFlat.push([name, sim]);
                 const num = simNumberMap.get(name);
                 const isActive = stickyData && stickyData[0] === name;
                 const entry = legendDiv.append('div')
-                    .attr('class', isActive ? 'legend-entry legend-entry-active' : 'legend-entry');
+                    .attr('class', isActive ? 'legend-entry legend-entry-active' : 'legend-entry')
+                    .attr('data-sim', name);
 
                 entry.append('span')
                     .attr('class', 'legend-number')
@@ -1109,37 +1149,13 @@ function render() {
                     .attr('class', 'legend-name')
                     .text(name);
 
-                entry.on('click', function(event) {
-                    event.stopPropagation();
-                    const d = filteredSims.find(([n]) => n === name);
-                    const pts = simGroup.selectAll('.sim-point');
-                    if (stickyData && stickyData[0] === d[0]) {
-                        stickyData = null;
-                        tooltip.classed('visible', false).classed('sticky', false)
-                            .style('pointer-events', 'none');
-                        pts.transition().duration(200)
-                            .attr('transform', p => `translate(${xScale(Math.log10(getResolutionMass(p[1])))},${yScale(getYValue(p[1]))}) scale(1)`);
-                    } else {
-                        stickyData = d;
-                        pts.filter(p => p[0] !== stickyData[0]).transition().duration(200)
-                            .attr('transform', p => `translate(${xScale(Math.log10(getResolutionMass(p[1])))},${yScale(getYValue(p[1]))}) scale(1)`);
-                        pts.filter(p => p[0] === stickyData[0]).transition().duration(200)
-                            .attr('transform', p => `translate(${xScale(Math.log10(getResolutionMass(p[1])))},${yScale(getYValue(p[1]))}) scale(1.5)`);
-                        tooltip.html(buildTooltipHTML(d, true))
-                            .classed('visible', true).classed('sticky', true)
-                            .style('pointer-events', 'auto');
-                        const svgRect = svg.node().getBoundingClientRect();
-                        positionTooltip({
-                            pageX: svgRect.left + margin.left + xScale(Math.log10(getResolutionMass(d[1]))) + window.scrollX,
-                            pageY: svgRect.top + margin.top + yScale(getYValue(d[1])) + window.scrollY,
-                        });
-                    }
-                    // Update legend active classes directly
-                    document.querySelectorAll('.legend-entry').forEach((node, i) => {
-                        const entryName = legendSimsFlat[i] ? legendSimsFlat[i][0] : null;
-                        node.classList.toggle('legend-entry-active', !!(stickyData && stickyData[0] === entryName));
+                // Hovering a legend entry brings up its point; clicking pins it
+                entry.on('mouseenter', () => enterPoint([name, sim], pointPageEvent([name, sim])))
+                    .on('mouseleave', () => leavePoint([name, sim]))
+                    .on('click', event => {
+                        const pageEvent = pointPageEvent([name, sim]);
+                        clickPoint([name, sim], { stopPropagation: () => event.stopPropagation(), ...pageEvent });
                     });
-                });
             });
         });
     }
@@ -1752,7 +1768,7 @@ function refreshAxes() {
 }
 
 function getDefaultYDomain() {
-    if (currentYMode === 'volume') return [0.5, 12];
+    if (currentYMode === 'volume') return [0.5, 13.5];
     return calcAreaDomain();
 }
 

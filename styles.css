@@ -465,8 +465,12 @@ svg {
     font-size: 9px;
     font-weight: 600;
     fill: var(--chart-text);
-    pointer-events: none;
     text-anchor: middle;
+    cursor: pointer;
+}
+
+.point-label:hover {
+    font-size: 11px;
 }
 
 .chart-label {
