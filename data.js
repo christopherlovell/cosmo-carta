@@ -542,6 +542,7 @@ const familyEmoji = {
     'WDM-CHIPS':     '🍟',
     'MEGATRON':      '🤖',
     'MEGATRON-cosmic-noon': '🤖',
+    'SPHINX':        'sphinx.png',
     'EuclidEmulator1': '🇪',
     'EuclidEmulator2': '🇪',
     'Magneticum Pathfinder':    '🧲',
