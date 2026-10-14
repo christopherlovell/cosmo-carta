@@ -533,6 +533,8 @@ const familyEmoji = {
     'NewHorizon':    '🌅',
     'ELVIS':         '🕺',
     'Flagship':      '🇪',
+    'CHIPS':         '🍟',
+    'WDM-CHIPS':     '🍟',
     'EuclidEmulator1': '🇪',
     'EuclidEmulator2': '🇪',
     'Magneticum Pathfinder':    '🧲',
