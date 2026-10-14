@@ -535,6 +535,8 @@ const familyEmoji = {
     'Flagship':      '🇪',
     'CHIPS':         '🍟',
     'WDM-CHIPS':     '🍟',
+    'MEGATRON':      '🤖',
+    'MEGATRON-cosmic-noon': '🤖',
     'EuclidEmulator1': '🇪',
     'EuclidEmulator2': '🇪',
     'Magneticum Pathfinder':    '🧲',
