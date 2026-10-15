@@ -474,6 +474,7 @@ const simulationFamilies = {
         'Popping-2009':       {code: 'Gadget-2', size: 32/0.7,    m_g: 3.35e6/0.7,  'radiative-transfer': false, complete: true, redshift_end: 0.0,  periodic: true, year: 2009, month: '', ads: 'https://ui.adsabs.harvard.edu/abs/2009A%26A...504...15P'}
     },
     'Individual DMO Simulations': {
+        'Sahyadri': {size: 200/0.6736, m_dm: 8.1e7/0.6736, n_dm_part: 2048, code: 'Gadget-4', 'radiative-transfer': false, complete: true, redshift_end: 0.0, periodic: true, dmo: true, year: 2026, month: 'July', ads: 'https://ui.adsabs.harvard.edu/abs/2026JCAP...07..028D'}, // Dhawalikar et al.; fiducial Planck-2018 run of 9 seed-matched boxes (+/- steps in Omega_m, n_s, h, A_s), more parameters planned
         // ── Legacy N-body runs, 1983-2004. Pre-arXiv papers link to ADS. h^-1 units converted with the h quoted in each paper
         // (h=0.5 for the Omega=1 CDM era unless stated). Masses marked "computed" use m = 2.775e11 * Omega_m * (L/N^(1/3))^3 h^-1 Msun.
         'Klypin+Shandarin-1983': {size: 160/0.5, m_dm: 1.2e18/32768/0.5, n_dm_part: 32, code: 'PM', 'radiative-transfer': false, complete: true, redshift_end: 0.0, periodic: true, dmo: true, year: 1983, month: '', ads: 'https://ui.adsabs.harvard.edu/abs/1983MNRAS.204..891K/abstract'}, // HDM; 160 h^-1 Mpc, cube mass 1.2e18 h^-1 Msun
