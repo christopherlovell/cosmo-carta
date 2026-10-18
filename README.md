@@ -50,7 +50,8 @@ Contributions are welcome! To add new simulations:
 
 1. Edit `data.js` and add your simulation to the `simulations` object
 2. Follow the existing format with required fields: `size`, `m_g`, `RT`, `complete`, `redshift_end`, `type`
-3. Submit a pull request
+3. Run `python3 scripts/fetch_first_authors.py` (needs an [ADS API token](https://ui.adsabs.harvard.edu/user/settings/token) in `ADS_DEV_KEY`) to fill in `first_author` from each new entry's `ads` link
+4. Submit a pull request
 
 ## License
 MIT License - feel free to use and modify for your research.
