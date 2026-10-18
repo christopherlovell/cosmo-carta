@@ -56,13 +56,15 @@ const simulationFamilies = {
     },
     'MillenniumTNG': {
         'MTNG740': {size: 740, m_g: 3.1e7, m_dm: 1.7e8, n_g_part: 4320, n_dm_part: 4320, code: 'Arepo', 'radiative-transfer': false, complete: true, redshift_end: 0.0, periodic: true, year: 2023, month: '', ads: 'https://arxiv.org/abs/2210.10060', first_author: 'Pakmor', dust: false},
-        'MTNG185': {size: 185, m_g: 3.1e7, m_dm: 1.7e8, n_g_part: 1080, n_dm_part: 1080, code: 'Arepo', 'radiative-transfer': false, complete: true, redshift_end: 0.0, periodic: true, year: 2023, month: '', ads: 'https://arxiv.org/abs/2210.10059', first_author: 'Hernández-Aguayo', dust: false}
+        'MTNG185': {size: 185, m_g: 3.1e7, m_dm: 1.7e8, n_g_part: 1080, n_dm_part: 1080, code: 'Arepo', 'radiative-transfer': false, complete: true, redshift_end: 0.0, periodic: true, year: 2023, month: '', ads: 'https://arxiv.org/abs/2210.10059', first_author: 'Hernández-Aguayo', dust: false},
+        'MTNG3000': {size: 3000, m_dm: 6.66e8/0.6774, n_dm_part: 10240, code: 'Gadget-4', 'radiative-transfer': false, complete: true, redshift_end: 0.0, periodic: true, dmo: true, year: 2025, month: 'June', ads: 'https://arxiv.org/abs/2407.21103', first_author: 'Hernández-Aguayo'} // Hernández-Aguayo et al.; 3000 Mpc = 2040 h^-1 Mpc, CDM mass in h^-1 Msun (h=0.6774); paired-and-fixed pair, each with 2560^3 neutrino particles (M_nu = 100 meV)
     },
     'Millennium': {
         'Millennium': {size: 500/0.7, m_g: 0, m_dm: 8.6e8/0.7, n_g_part: 0, n_dm_part: 2160, code: 'Gadget-2', 'radiative-transfer': false, complete: true, redshift_end: 0.0, periodic: true, dmo: true, year: 2005, month: '', ads: 'https://arxiv.org/abs/astro-ph/0504097', first_author: 'Springel', dust: false},
         'Millennium-II': {size: 100/0.7, m_g: 0, m_dm: 6.9e6/0.7, n_g_part: 0, n_dm_part: 2160, code: 'Gadget-3', 'radiative-transfer': false, complete: true, redshift_end: 0.0, periodic: true, dmo: true, year: 2009, month: '', ads: 'https://arxiv.org/abs/0903.3041', first_author: 'Boylan-Kolchin', dust: false},
         'MS-W7':          {size: 500/0.704, m_g: 0, m_dm: 9.31e8/0.704, n_g_part: 0, n_dm_part: 2160, code: 'Gadget-2', 'radiative-transfer': false, complete: true, redshift_end: 0.0, periodic: true, dmo: true, year: 2013, month: '', ads: 'https://arxiv.org/abs/1206.0052', first_author: 'Guo', dust: false}, // Guo et al.; Millennium rerun with WMAP7 cosmology; code not named (same as MS)
         'Millennium-XXL': {size: 3000/0.73, m_g: 0, m_dm: 8.456e9, n_g_part: 0, n_dm_part: 6720, code: 'Gadget-3', 'radiative-transfer': false, complete: true, redshift_end: 0.0, periodic: true, dmo: true, year: 2012, month: '', ads: 'https://arxiv.org/abs/1203.3216', first_author: 'Angulo', dust: false},  // Angulo et al.; 303 billion particles; mass stated in Msun
+        'P-Millennium':   {size: 542.16/0.6777, m_dm: 1.061e8/0.6777, n_dm_part: 5040, code: 'Gadget-2', 'radiative-transfer': false, complete: true, redshift_end: 0.0, periodic: true, dmo: true, year: 2019, month: '', ads: 'https://arxiv.org/abs/1808.08276', first_author: 'Baugh'}, // Baugh et al.; Planck Millennium, 800 Mpc box, EAGLE (Planck 2013) cosmology h=0.6777; reduced-memory GADGET (cited as Springel 2005)
         'Millennium-Gas':  {size: 500/0.73, m_g: 3.12e9/0.73, m_dm: 1.422e10/0.73, code: 'Gadget-2', 'radiative-transfer': false, complete: true, redshift_end: 0.0, periodic: true, year: 2008, month: '', ads: 'https://arxiv.org/abs/0710.3698', first_author: 'Hartley', dust: false} // Hartley et al.; 5e8 gas + 5e8 DM particles in the Millennium volume; GO, PC and FO physics variants
     },
     'COLIBRE': {
@@ -76,9 +78,12 @@ const simulationFamilies = {
         'COLIBRE-L400m7_DMO': {size: 400, m_dm: 1.94e7, n_dm_part: 5*3008, code: 'SWIFT', 'radiative-transfer': false, complete: true, redshift_end: 0.0, periodic: true, dmo: true, year: 2025, month: '', ads: 'https://arxiv.org/abs/2508.21126', first_author: 'Schaye'}
     },
     'MassiveBlack': {
+        // One lineage of P-Gadget / MP-Gadget runs: MassiveBlack, BlueTides, ASTRID
         // Masses in h^-1 M_sun converted with h=0.7; box in h^-1 Mpc / 0.7
         'MassiveBlack': {size: 533.3/0.7, m_g: 5.65e7/0.7, m_dm: 2.78e8, n_g_part: 3200, n_dm_part: 3200, code: 'Gadget-3', 'radiative-transfer': false, dust: false, complete: true, redshift_end: 4.75, periodic: true, year: 2012, month: '', ads: 'https://arxiv.org/abs/1107.1253', first_author: 'Di Matteo'}, // P-Gadget
-        'MassiveBlack-II': {size: 100/0.704, m_g: 2.2e6/0.704, m_dm: 1.1e7/0.704, n_g_part: 1792, n_dm_part: 1792, code: 'Gadget-3', 'radiative-transfer': false, dust: false, complete: true, redshift_end: 0.0, periodic: true, year: 2015, month: '', ads: 'https://ui.adsabs.harvard.edu/abs/2015MNRAS.450.1349K', first_author: 'Khandai'} // P-Gadget
+        'MassiveBlack-II': {size: 100/0.704, m_g: 2.2e6/0.704, m_dm: 1.1e7/0.704, n_g_part: 1792, n_dm_part: 1792, code: 'Gadget-3', 'radiative-transfer': false, dust: false, complete: true, redshift_end: 0.0, periodic: true, year: 2015, month: '', ads: 'https://ui.adsabs.harvard.edu/abs/2015MNRAS.450.1349K', first_author: 'Khandai'}, // P-Gadget
+        'BlueTides': {size: 400/0.697, m_g: 2.36e6/0.697, m_dm: 1.2e7/0.697, n_g_part: 7040, n_dm_part: 7040, code: 'MP-Gadget', 'radiative-transfer': false, dust: false, complete: true, redshift_end: 8.0, periodic: true, year: 2016, month: 'January', ads: 'https://ui.adsabs.harvard.edu/abs/2016MNRAS.455.2778F', first_author: 'Feng'}, // Feng et al.; Table 1 masses in h^-1 Msun, h=0.697
+        'Astrid': {size: 250/0.6774, m_g: 1.27e6/0.6774, m_dm: 6.7e6/0.6774, n_g_part: 5500, n_dm_part: 5500, code: 'MP-Gadget', 'radiative-transfer': false, dust: false, complete: true, redshift_end: 0.0, periodic: true, year: 2026, month: '', ads: 'https://ui.adsabs.harvard.edu/abs/2026ApJ...999...41Z', first_author: 'Zhou'} // Zhou et al. 2026 (z=0 paper, arXiv:2510.13976); first presented in Bird et al. 2022 (arXiv:2111.01160); masses in h^-1 Msun, h=0.6774
     },
     'Magneticum Pathfinder': {
         // Magneticum Pathfinder suite; box sizes in h^-1 Mpc (h=0.704, WMAP7); masses in M_sun
@@ -217,7 +222,8 @@ const simulationFamilies = {
     'AbacusSummit': {
         // Maksimova et al. 2021 (arXiv:2110.11398); h=0.6736 for the c000 cosmology, particle mass 2e9 h^-1 Msun
         'AbacusSummit-base':  {size: 2000/0.6736, m_dm: 2e9/0.6736, n_dm_part: 6912, code: 'Abacus', 'radiative-transfer': false, complete: true, redshift_end: 0.1, periodic: true, dmo: true, suite: true, n_sims: 139, year: 2021, month: '', ads: 'https://arxiv.org/abs/2110.11398', first_author: 'Maksimova'}, // 97 cosmologies plus 25 phases of the fiducial
-        'AbacusSummit-small': {size: 500/0.6736,  m_dm: 2e9/0.6736, n_dm_part: 1728, code: 'Abacus', 'radiative-transfer': false, complete: true, redshift_end: 0.2, periodic: true, dmo: true, suite: true, n_sims: 1883, year: 2021, month: '', ads: 'https://arxiv.org/abs/2110.11398', first_author: 'Maksimova'}  // 1643 of the 1883 boxes reached the final redshift
+        'AbacusSummit-small': {size: 500/0.6736,  m_dm: 2e9/0.6736, n_dm_part: 1728, code: 'Abacus', 'radiative-transfer': false, complete: true, redshift_end: 0.2, periodic: true, dmo: true, suite: true, n_sims: 1883, year: 2021, month: '', ads: 'https://arxiv.org/abs/2110.11398', first_author: 'Maksimova'},  // 1643 of the 1883 boxes reached the final redshift
+        'AbacusSummit-huge':  {size: 7500/0.6736, m_dm: 27*2e9/0.6736, n_dm_part: 8640, code: 'Abacus', 'radiative-transfer': false, complete: true, redshift_end: 0.1, periodic: true, dmo: true, year: 2021, month: '', ads: 'https://arxiv.org/abs/2110.11398', first_author: 'Maksimova'} // 2 boxes (ph201, ph202; c000 cosmology); 27x the base particle mass
     },
     'N-body Suites': {
         // Ensembles of >=100 dark-matter-only runs (varied seeds and/or cosmology); one representative configuration per suite.
@@ -312,7 +318,7 @@ const simulationFamilies = {
     },
     'Dark Sky': {
         // Skillman et al. 2014; 2HOT tree code, h=0.688, masses in h^-1 Msun
-        'ds14_a':      {size: 8000/0.688, m_dm: 3.9e10/0.688, n_dm_part: 10240, code: '2HOT', 'radiative-transfer': false, complete: true, redshift_end: 0.0, periodic: true, dmo: true, year: 2014, month: '', ads: 'https://arxiv.org/abs/1407.2600', first_author: 'Skillman'},
+        'Dark Sky':    {size: 8000/0.688, m_dm: 3.9e10/0.688, n_dm_part: 10240, code: '2HOT', 'radiative-transfer': false, complete: true, redshift_end: 0.0, periodic: true, dmo: true, year: 2014, month: '', ads: 'https://arxiv.org/abs/1407.2600', first_author: 'Skillman'}, // ds14_a in the Dark Sky data release; the first trillion-particle run (1.07e12)
         'ds14_g_1600': {size: 1600/0.688, m_dm: 4.9e9/0.688,  n_dm_part: 4096,  code: '2HOT', 'radiative-transfer': false, complete: true, redshift_end: 0.0, periodic: true, dmo: true, year: 2014, month: '', ads: 'https://arxiv.org/abs/1407.2600', first_author: 'Skillman'},
         'ds14_g_800':  {size: 800/0.688,  m_dm: 6.1e8/0.688,  n_dm_part: 4096,  code: '2HOT', 'radiative-transfer': false, complete: true, redshift_end: 0.0, periodic: true, dmo: true, year: 2014, month: '', ads: 'https://arxiv.org/abs/1407.2600', first_author: 'Skillman'}
     },
@@ -322,8 +328,11 @@ const simulationFamilies = {
         'nu2GC-M':  {size: 560/0.68,  m_dm: 2.20e8/0.68, n_dm_part: 4096, code: 'GreeM', 'radiative-transfer': false, complete: true, redshift_end: 0.0, periodic: true, dmo: true, year: 2015, month: '', ads: 'https://arxiv.org/abs/1412.2860', first_author: 'Ishiyama'},
         'nu2GC-H2': {size: 70/0.68,   m_dm: 3.44e6/0.68, n_dm_part: 2048, code: 'GreeM', 'radiative-transfer': false, complete: true, redshift_end: 0.0, periodic: true, dmo: true, year: 2015, month: '', ads: 'https://arxiv.org/abs/1412.2860', first_author: 'Ishiyama'}
     },
-    'BlueTides': {
-        'BlueTides': {size: 400/0.697, m_g: 2.36e6/0.697, m_dm: 1.2e7/0.697, n_g_part: 7040, n_dm_part: 7040, code: 'MP-Gadget', 'radiative-transfer': false, dust: false, complete: true, redshift_end: 8.0, periodic: true, year: 2016, month: 'January', ads: 'https://ui.adsabs.harvard.edu/abs/2016MNRAS.455.2778F', first_author: 'Feng'} // Feng et al.; Table 1 masses in h^-1 Msun, h=0.697
+    'Uchuu': {
+        // Ishiyama et al. 2021; GreeM TreePM, Planck 2015 cosmology (h=0.6774), masses in h^-1 Msun
+        'Uchuu':      {size: 2000/0.6774, m_dm: 3.27e8/0.6774, n_dm_part: 12800, code: 'GreeM', 'radiative-transfer': false, complete: true, redshift_end: 0.0, periodic: true, dmo: true, year: 2021, month: 'September', ads: 'https://arxiv.org/abs/2007.14720', first_author: 'Ishiyama'},
+        'mini-Uchuu': {size: 400/0.6774,  m_dm: 3.27e8/0.6774, n_dm_part: 2560,  code: 'GreeM', 'radiative-transfer': false, complete: true, redshift_end: 0.0, periodic: true, dmo: true, year: 2021, month: 'September', ads: 'https://arxiv.org/abs/2007.14720', first_author: 'Ishiyama'},
+        'Shin-Uchuu': {size: 140/0.6774,  m_dm: 8.97e5/0.6774, n_dm_part: 6400,  code: 'GreeM', 'radiative-transfer': false, complete: true, redshift_end: 0.0, periodic: true, dmo: true, year: 2021, month: 'September', ads: 'https://arxiv.org/abs/2007.14720', first_author: 'Ishiyama'}
     },
     'BonFIRE': {
         // Samuel et al. 2026; FIRE-3 early-Universe suite. CampFIRE runs resimulate a (5 cMpc)^3 subregion of BonFIRE at higher resolution
@@ -405,7 +414,6 @@ const simulationFamilies = {
         'HESTIA-4096':  {size: Math.cbrt(4/3*Math.PI*Math.pow(6.0, 3)), m_g: 1.8e5, m_dm: 1.2e6, code: 'Arepo', 'radiative-transfer': false, mhd: true, complete: true, redshift_end: 0.0, periodic: false, year: 2020, month: 'October', ads: 'https://ui.adsabs.harvard.edu/abs/2020MNRAS.498.2968L', first_author: 'Libeskind'}  // 13 Local Groups; ~4 h^-1 Mpc uncontaminated radius
     },
     'Individual Hydrodynamical Simulations': {
-        'Astrid': {size: 250/0.7, m_g: 1.27e6/0.7, m_dm: 9.63e6, n_g_part: 5500, n_dm_part: 5500, code: 'MP-Gadget', 'radiative-transfer': false, dust: false, complete: true, redshift_end: 3.0, periodic: true, year: 2022, month: '', ads: 'https://arxiv.org/abs/2111.01160', first_author: 'Bird'},
         'Horizon-AGN': {code: 'RAMSES', size: 120, m_g: 4e6, 'radiative-transfer': false, complete: true, redshift_end: 0.0, periodic: true, year: 2014, month: '', ads: 'https://ui.adsabs.harvard.edu/abs/2014MNRAS.444.1453D', first_author: 'Dubois'},
         'BAHAMAS': {code: 'Gadget-3', size: 560, m_g: 1.5e9, 'radiative-transfer': false, complete: true, redshift_end: 0.0, periodic: true, year: 2017, month: '', ads: 'https://arxiv.org/abs/1603.02702', first_author: 'McCarthy'},
         'SPHINX': {code: 'RAMSES-RT', size: 20, m_g: 3.8e4, 'radiative-transfer': true, complete: true, redshift_end: 4.6, periodic: true, year: 2018, month: '', ads: 'https://arxiv.org/abs/2207.03232', first_author: 'Rosdahl'}, // SPHINX20 (Rosdahl et al. 2022)
@@ -507,9 +515,20 @@ const simulationFamilies = {
         'Q-Continuum':      {size: 1300, m_dm: 1.48e8, n_dm_part: 8192, code: 'HACC', 'radiative-transfer': false, complete: true, redshift_end: 0.0, periodic: true, dmo: true, year: 2015, month: '', ads: 'https://arxiv.org/abs/1411.3396', first_author: 'Heitmann'}, // Heitmann et al.; 1300 Mpc = 923 h^-1 Mpc; mass stated in Msun
         'COCO':             {size: Math.cbrt(4/3*Math.PI*Math.pow(17.4/0.704, 3)), m_dm: 1.135e5/0.704, code: 'Gadget-3', 'radiative-transfer': false, complete: true, redshift_end: 0.0, periodic: false, dmo: true, year: 2016, month: '', ads: 'https://arxiv.org/abs/1505.06436', first_author: 'Hellwing'}, // Copernicus Complexio (Hellwing et al.); one spherical zoom region of radius 17.4 h^-1 Mpc from the 70.4 h^-1 Mpc COLOR box
         'Chinchilla':    {code: 'Gadget-2', size: 400/0.6711,  m_dm: 5.9e8/0.6711,  'radiative-transfer': false, complete: true, redshift_end: 0.0, periodic: true, dmo: true, year: 2019, month: '', ads: 'https://arxiv.org/abs/1503.08833', first_author: 'Li'}, // L-Gadget; c400-2048 box described in Li et al. 2016
-        'Outer Rim':     {code: 'HACC', size: 3000/0.6711, m_dm: 1.8e9/0.6711,  'radiative-transfer': false, complete: true, redshift_end: 0.0, periodic: true, dmo: true, year: 2019, month: '', ads: 'https://arxiv.org/abs/1904.11970', first_author: 'Heitmann'},
-        'Flagship':      {code: 'PKDGRAV3', size: 3600/0.6711, m_dm: 1.0e9/0.6711,  'radiative-transfer': false, complete: true, redshift_end: 0.0, periodic: true, dmo: true, year: 2017, month: '', ads: 'https://arxiv.org/abs/1609.08621', first_author: 'Potter'},
-        'HalfDome':      {code: 'FastPM', size: 3750/0.6711, m_dm: 2.0e10/0.6711, 'radiative-transfer': false, complete: true, redshift_end: 0.0, periodic: true, dmo: true, year: 2024, month: '', ads: 'https://arxiv.org/abs/2407.17462', first_author: 'Bayer'}
+        'Outer Rim':     {code: 'HACC', size: 3000/0.6711, m_dm: 1.8e9/0.6711, n_dm_part: 10240, 'radiative-transfer': false, complete: true, redshift_end: 0.0, periodic: true, dmo: true, year: 2019, month: '', ads: 'https://arxiv.org/abs/1904.11970', first_author: 'Heitmann'},
+        'Flagship-1':    {code: 'PKDGRAV3', size: 3780/0.67, m_dm: 2.4e9/0.67, n_dm_part: 12600, 'radiative-transfer': false, complete: true, redshift_end: 0.0, periodic: true, dmo: true, year: 2017, month: '', ads: 'https://arxiv.org/abs/1609.08621', first_author: 'Potter'}, // Potter, Stadel & Teyssier; Euclid reference cosmology (h=0.67, Omega_m=0.319); box and mass from Heitmann et al. 2021 (Last Journey), consistent with 12600^3 at Omega_m=0.319
+        'Flagship-2':    {code: 'PKDGRAV3', size: 3600/0.67, m_dm: 1.0e9/0.67, n_dm_part: 16000, 'radiative-transfer': false, complete: true, redshift_end: 0.0, periodic: true, dmo: true, year: 2025, month: '', ads: 'https://arxiv.org/abs/2405.13495', first_author: 'Euclid Collaboration'}, // Euclid Collaboration: Castander et al., A&A 697, A5; run in 2020, h=0.67, Omega_m=0.319
+        'HalfDome':      {code: 'FastPM', size: 3750/0.6711, m_dm: 2.0e10/0.6711, 'radiative-transfer': false, complete: true, redshift_end: 0.0, periodic: true, dmo: true, year: 2024, month: '', ads: 'https://arxiv.org/abs/2407.17462', first_author: 'Bayer'},
+        // ── Trillion-particle runs from Angulo & Hahn 2022 (Table 1) and later large-volume N-body runs
+        'TianNu':        {code: 'CUBEP3M', size: 1200/0.67, m_dm: 7e8, n_dm_part: 6912, 'radiative-transfer': false, complete: true, redshift_end: 0.0, periodic: true, dmo: true, year: 2017, month: 'August', ads: 'https://arxiv.org/abs/1611.01545', first_author: 'Emberson'}, // Emberson et al.; plus 13824^3 neutrino particles (m_nu = 0.05 eV) added at z=5; CDM mass stated in Msun (Yu et al. 2017), h=0.67
+        'Cosmo-π':       {code: 'CUBE', size: 3200/0.72, m_dm: 0.258*2.775e11*Math.pow(3200/16384, 3)/0.72, n_dm_part: 16384, 'radiative-transfer': false, complete: true, redshift_end: 0.0, periodic: true, dmo: true, year: 2020, month: 'May', ads: 'https://arxiv.org/abs/2003.03931', first_author: 'Cheng'}, // Cheng et al.; 4.39e12 particles, h=0.72, Omega_m=0.258; mass computed
+        'Last Journey':  {code: 'HACC', size: 3400/0.6766, m_dm: 2.7e9/0.6766, n_dm_part: 10752, 'radiative-transfer': false, complete: true, redshift_end: 0.0, periodic: true, dmo: true, year: 2021, month: 'January', ads: 'https://arxiv.org/abs/2006.01697', first_author: 'Heitmann'}, // Heitmann et al.; 1.24e12 particles, h=0.6766
+        'Farpoint':      {code: 'HACC', size: 1000/0.6766, m_dm: 4.6e7/0.6766, n_dm_part: 12288, 'radiative-transfer': false, complete: true, redshift_end: 0.0, periodic: true, dmo: true, year: 2022, month: 'March', ads: 'https://arxiv.org/abs/2109.01956', first_author: 'Frontiere'}, // Frontiere et al.; 1.86e12 particles, same cosmology as Last Journey
+        'HyperMillennium': {size: 2500/0.6766, m_dm: 3.2e8/0.6766, n_dm_part: 16128, code: 'PhotoNs', 'radiative-transfer': false, complete: true, redshift_end: 0.0, periodic: true, dmo: true, year: 2025, month: '', ads: 'https://arxiv.org/abs/2510.27291', first_author: 'Wang'}, // Wang et al.; 4.2e12 particles, PhotoNs-3.7 on ORISE, Planck h=0.6766; data release April 2026
+        'FRONTIER-E-GO': {code: 'HACC', size: 3150/0.6766, m_dm: 0.31*2.775e11*Math.pow(3150/12600, 3)/0.6766, n_dm_part: 12600, 'radiative-transfer': false, complete: true, redshift_end: 0.0, periodic: true, dmo: true, year: 2026, month: 'July', ads: 'https://arxiv.org/abs/2607.16059', first_author: 'Wells'}, // gravity-only twin of FRONTIER-E (same box, 12600^3 particles), released through OpenCosmo (Wells et al.); mass computed, ~2e9 Msun
+        'Roadrunner-Universe': {code: 'MC3', size: 750/0.72, m_dm: 5e8/0.72, n_dm_part: 4000, 'radiative-transfer': false, complete: true, redshift_end: 2.25, periodic: true, dmo: true, year: 2009, month: '', ads: 'https://arxiv.org/abs/0911.5341', first_author: 'White'}, // 9 PM runs on Roadrunner (LANL), Habib et al. 2009 (J. Phys. Conf. Ser. 180, 012019); specs from White et al. 2010; h=0.72; final redshift not stated, lowest output used is z=2.25
+        'Ultramarine':   {code: 'PhotoNs', size: 512/0.6732, m_dm: 5.6e6/0.6732, n_dm_part: 12800, 'radiative-transfer': false, complete: true, redshift_end: 5.5, periodic: true, dmo: true, year: 2022, month: '', ads: 'https://arxiv.org/abs/2206.06313', first_author: 'Wang'}, // Wang, Gao & Meng; 2.1e12 particles, Planck cosmology h=0.6732; PhotoNs-3.4 (PM + FMM)
+        'Discovery':     {code: 'HACC', size: 1500, m_dm: 4.4e8, n_dm_part: 6720, 'radiative-transfer': false, complete: true, redshift_end: 0.0, periodic: true, dmo: true, year: 2025, month: 'June', ads: 'https://arxiv.org/abs/2503.05947', first_author: 'Beltz-Mohrmann'} // Beltz-Mohrmann et al.; LCDM run (h=0.6797, Omega_m=0.3069) of a pair with a matched w0waCDM twin (DESI Y1), same ICs; run on Aurora; box and mass stated in Mpc and Msun
     }
 };
 
@@ -539,7 +558,8 @@ const familyEmoji = {
     'Horizon-AGN':   '🌅',
     'NewHorizon':    '🌅',
     'ELVIS':         '🕺',
-    'Flagship':      '🇪',
+    'Flagship-1':    '🇪',
+    'Flagship-2':    '🇪',
     'CHIPS':         '🍟',
     'WDM-CHIPS':     '🍟',
     'MEGATRON':      '🤖',
