@@ -571,11 +571,18 @@ svg {
     fill: var(--chart-text);
     text-anchor: middle;
     cursor: pointer;
+    transition: opacity 0.2s;
 }
 
 .point-label:hover {
     font-size: 11px;
     fill: var(--accent);
+}
+
+/* Hovering a search result fades every other point */
+.search-focus .sim-point:not(.focused),
+.search-focus .point-label:not(.focused) {
+    opacity: 0.12;
 }
 
 .icon-key {
@@ -751,6 +758,88 @@ svg {
 .clear-btn:hover {
     border-color: var(--border-strong);
     color: var(--text-color);
+}
+
+.clear-btn:disabled {
+    opacity: 0.4;
+    pointer-events: none;
+}
+
+/* ── Search ─────────────────────────────────────────────────────── */
+.search-input {
+    width: 100%;
+    padding: 7px 10px;
+    background: var(--input-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 3px;
+    color: var(--text-color);
+    font-family: var(--font-ui);
+    font-size: 13px;
+    outline: none;
+    transition: border-color 0.15s;
+}
+
+.search-input::placeholder {
+    color: var(--text-muted);
+}
+
+.search-input:focus {
+    border-color: var(--accent);
+}
+
+.search-actions {
+    margin-top: 8px;
+}
+
+.search-count {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-bottom: 6px;
+}
+
+.search-results {
+    max-height: 300px;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: var(--border-strong) transparent;
+}
+
+.search-result {
+    align-items: flex-start;
+}
+
+.search-result input {
+    flex-shrink: 0;
+    margin-top: 3px;
+}
+
+.search-result-text {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    line-height: 1.35;
+}
+
+.search-result-name,
+.search-result-meta {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.search-result-meta {
+    font-size: 11px;
+    color: var(--text-muted);
+}
+
+.search-result-hidden .search-result-name {
+    color: var(--text-muted);
+}
+
+.search-result-hidden .search-result-meta::before {
+    content: "Hidden by filters · ";
+    font-style: italic;
 }
 
 .year-controls {

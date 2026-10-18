@@ -292,6 +292,11 @@ let animationId = null;
 let isAnimating = false;
 let stickyData = null;
 
+// Search panel state; render() refreshes plottedSims and focusPoint
+let focusedSim = null;
+let plottedSims = new Set();
+let focusPoint = () => {};
+
 // ── Audio engine ─────────────────────────────────────────────────
 let audioCtx = null;
 let masterGain = null;
@@ -475,6 +480,7 @@ function buildTooltipHTML(d, includeLink) {
     if (sim['radiative-transfer']) html += `Radiative Transfer: Yes<br>`;
     if (sim.dust) html += `Live dust model: Yes<br>`;
     html += `Redshift end: z=${sim.redshift_end}<br>`;
+    if (sim.first_author) html += `First author: ${sim.first_author}<br>`;
     if (sim.year !== undefined) html += `Published: ${sim.year}`;
     if (includeLink && sim.ads) html += `<br><a href="${sim.ads}" target="_blank" class="tooltip-link">View paper ↗</a>`;
     return html;
@@ -1151,6 +1157,30 @@ function render() {
         .on('mouseleave', (event, d) => leavePoint(d))
         .on('click', (event, d) => clickPoint(d, event));
 
+    // Hovering a search result brings up its point and fades the rest
+    const inViewDatum = name => {
+        const d = filteredSims.find(([n]) => n === name);
+        if (!d) return null;
+        const [x, y] = pointPos(d);
+        return x >= 0 && x <= width && y >= 0 && y <= height ? d : null;
+    };
+    const applyFocus = d => {
+        g.classed('search-focus', !!d);
+        allPoints.classed('focused', p => !!d && p[0] === d[0]);
+        labelAll.classed('focused', p => !!d && p[0] === d[0]);
+    };
+    applyFocus(focusedSim && inViewDatum(focusedSim));
+    focusPoint = (name, on) => {
+        const d = inViewDatum(name);
+        applyFocus(on ? d : null);
+        if (!d) return;
+        if (on) enterPoint(d, pointPageEvent(d));
+        else leavePoint(d);
+    };
+
+    plottedSims = new Set(filteredSims.map(([name]) => name));
+    syncSearchResults();
+
     // Render legend
     legendGroup.selectAll('*').remove();
 
@@ -1491,25 +1521,159 @@ document.querySelectorAll('.family-checkbox').forEach(familyCheckbox => {
     });
 });
 
+// Tick a family if all its sims are ticked, part-tick it if only some are
+function syncFamilyCheckbox(familyName) {
+    const familyCheckbox = document.querySelector(`.family-checkbox[data-family="${familyName}"]`);
+    const allSimsInFamily = Array.from(document.querySelectorAll(`.individual-sim[data-family="${familyName}"]`));
+    const allChecked = allSimsInFamily.every(cb => cb.checked);
+    const anyChecked = allSimsInFamily.some(cb => cb.checked);
+
+    if (familyCheckbox) {
+        familyCheckbox.checked = allChecked;
+        familyCheckbox.indeterminate = !allChecked && anyChecked;
+    }
+}
+
+function syncAllFamilyCheckboxes() {
+    Object.keys(simulationFamilies).forEach(syncFamilyCheckbox);
+}
+
 // Individual sim checkbox functionality - update family checkbox state
 document.querySelectorAll('.individual-sim').forEach(simCheckbox => {
     simCheckbox.addEventListener('change', () => {
-        const familyName = simCheckbox.getAttribute('data-family');
-        const familyCheckbox = document.querySelector(`.family-checkbox[data-family="${familyName}"]`);
-
-        // Check if all sims in family are checked
-        const allSimsInFamily = document.querySelectorAll(`.individual-sim[data-family="${familyName}"]`);
-        const allChecked = Array.from(allSimsInFamily).every(cb => cb.checked);
-        const anyChecked = Array.from(allSimsInFamily).some(cb => cb.checked);
-
-        if (familyCheckbox) {
-            familyCheckbox.checked = allChecked;
-            familyCheckbox.indeterminate = !allChecked && anyChecked;
-        }
-
+        syncFamilyCheckbox(simCheckbox.getAttribute('data-family'));
         render();
     });
 });
+
+// ── Sidebar search ───────────────────────────────────────────────
+const simCheckboxes = new Map(
+    Array.from(document.querySelectorAll('.individual-sim')).map(cb => [cb.value, cb])
+);
+const searchInput = document.getElementById('sim-search');
+const searchResults = d3.select('#search-results');
+let searchMatches = [];
+
+// Lower-case and strip accents, so "dave" finds "Davé"
+const foldText = s => s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
+
+// Substring hits score highest (earlier is better); in fuzzy mode the token's characters
+// may instead appear in order, scored up for consecutive runs and word starts. -1 = no match
+function matchScore(token, text, fuzzy) {
+    const t = foldText(text);
+    const at = t.indexOf(token);
+    if (at >= 0) return 1000 - at;
+    if (!fuzzy) return -1;
+    let score = 0, from = 0, prev = -2;
+    for (const ch of token) {
+        const i = t.indexOf(ch, from);
+        if (i < 0) return -1;
+        score += (i === prev + 1 ? 5 : 1) + (i === 0 || !/[a-z0-9]/.test(t[i - 1]) ? 3 : 0);
+        prev = i;
+        from = i + 1;
+    }
+    return score;
+}
+
+// Every whitespace-separated token must match the sim's name, family, first author or code.
+// Fuzzy matching only kicks in when nothing matches exactly, so typos still find
+// things without stray hits creeping into Only these / Add these.
+// Returns [names, fuzzy]
+function searchSims(query) {
+    const tokens = foldText(query).split(/\s+/).filter(Boolean);
+    if (!tokens.length) return [[], false];
+    const rank = fuzzy => Object.entries(simulations)
+        .map(([name, sim]) => {
+            const fields = [[name, 1], [simToFamily[name] || '', 0.9], [sim.first_author || '', 0.85], [sim.code, 0.8]];
+            let total = 0;
+            for (const token of tokens) {
+                const best = Math.max(...fields.map(([text, w]) => {
+                    const s = matchScore(token, text, fuzzy);
+                    return s < 0 ? -1 : s * w;
+                }));
+                if (best < 0) return null;
+                total += best;
+            }
+            return [name, total];
+        })
+        .filter(Boolean)
+        .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))
+        .map(([name]) => name);
+    const exact = rank(false);
+    return exact.length ? [exact, false] : [rank(true), true];
+}
+
+function setFocusedSim(name) {
+    if (focusedSim === name) return;
+    if (focusedSim) focusPoint(focusedSim, false);
+    focusedSim = name;
+    if (name) focusPoint(name, true);
+}
+
+function updateSearchResults() {
+    setFocusedSim(null);
+    const hasQuery = searchInput.value.trim() !== '';
+    let fuzzy;
+    [searchMatches, fuzzy] = searchSims(searchInput.value);
+
+    const n = searchMatches.length;
+    document.getElementById('search-actions').style.display = hasQuery ? 'block' : 'none';
+    document.getElementById('search-count').textContent =
+        n ? `${n} ${fuzzy ? 'close ' : ''}match${n === 1 ? '' : 'es'}` : 'No matches';
+    document.getElementById('search-only').disabled = !searchMatches.length;
+    document.getElementById('search-add').disabled = !searchMatches.length;
+
+    searchResults.selectAll('*').remove();
+    searchMatches.forEach(name => {
+        const sim = simulations[name];
+        const row = searchResults.append('label')
+            .datum(name)
+            .attr('class', 'checkbox-item search-result')
+            .on('mouseenter', () => setFocusedSim(name))
+            .on('mouseleave', () => setFocusedSim(null));
+
+        // Ticking here ticks the sim in Simulation Families, which re-renders
+        row.append('input')
+            .attr('type', 'checkbox')
+            .on('change', event => {
+                const cb = simCheckboxes.get(name);
+                cb.checked = event.target.checked;
+                cb.dispatchEvent(new Event('change'));
+            });
+
+        const text = row.append('span').attr('class', 'search-result-text');
+        text.append('span').attr('class', 'search-result-name').text(name);
+        text.append('span').attr('class', 'search-result-meta')
+            .text([[sim.first_author, sim.year].filter(Boolean).join(' '), simToFamily[name], sim.code].filter(Boolean).join(' · '));
+    });
+    syncSearchResults();
+}
+
+// Mirror tick state onto the results, flagging ticked sims that other filters hide
+function syncSearchResults() {
+    searchResults.selectAll('.search-result')
+        .classed('search-result-hidden', name => simCheckboxes.get(name).checked && !plottedSims.has(name))
+        .select('input')
+        .property('checked', name => simCheckboxes.get(name).checked);
+}
+
+function tickSims(names, keepOthers) {
+    const wanted = new Set(names);
+    simCheckboxes.forEach((cb, name) => { cb.checked = wanted.has(name) || (keepOthers && cb.checked); });
+    syncAllFamilyCheckboxes();
+    render();
+}
+
+searchInput.addEventListener('input', updateSearchResults);
+searchInput.addEventListener('keydown', e => {
+    if (e.key !== 'Escape') return;
+    searchInput.value = '';
+    updateSearchResults();
+});
+
+document.getElementById('search-only').addEventListener('click', () => tickSims(searchMatches, false));
+document.getElementById('search-add').addEventListener('click', () => tickSims(searchMatches, true));
+document.getElementById('search-all').addEventListener('click', () => tickSims(simCheckboxes.keys(), false));
 
 // Dropdown toggle functionality
 document.querySelectorAll('.section-header').forEach(header => {
@@ -1696,15 +1860,9 @@ document.getElementById('codes-clear-all').addEventListener('click', () => {
     render();
 });
 
-document.getElementById('families-select-all').addEventListener('click', () => {
-    document.querySelectorAll('.family-checkbox, .individual-sim').forEach(cb => { cb.checked = true; });
-    render();
-});
+document.getElementById('families-select-all').addEventListener('click', () => tickSims(simCheckboxes.keys(), false));
 
-document.getElementById('families-clear-all').addEventListener('click', () => {
-    document.querySelectorAll('.family-checkbox, .individual-sim').forEach(cb => { cb.checked = false; });
-    render();
-});
+document.getElementById('families-clear-all').addEventListener('click', () => tickSims([], false));
 
 // ── Sound controls ───────────────────────────────────────────────
 document.getElementById('play-sounds').addEventListener('change', e => {
@@ -1988,7 +2146,12 @@ document.getElementById('reset-all').addEventListener('click', () => {
     document.querySelectorAll('.code-checkbox').forEach(cb => { cb.checked = true; });
 
     // All families and individual sims on
-    document.querySelectorAll('.family-checkbox, .individual-sim').forEach(cb => { cb.checked = true; });
+    simCheckboxes.forEach(cb => { cb.checked = true; });
+    syncAllFamilyCheckboxes();
+
+    // Clear search
+    searchInput.value = '';
+    updateSearchResults();
 
     // Clear sticky tooltip
     stickyData = null;

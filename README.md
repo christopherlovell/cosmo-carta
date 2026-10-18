@@ -14,6 +14,12 @@ An interactive web-based visualization tool for comparing cosmological simulatio
 - **Central Redshift (z)**: The redshift at which to calculate the area (0-15)
 - **Redshift Range (Δz)**: The depth of the redshift window (0.1-5)
 
+### Search
+
+- **Fuzzy search** by simulation name, family, first author or code (e.g. `tng50`, `eagle 100`, `swift dmo`, `schaye`)
+- **Hover** a result to highlight its point on the plot; **tick** it to show or hide it
+- **Only these / Add these / Show all** plot just the matches, add them to the plot, or restore everything
+
 ### Filtering
 
 - **Simulation Types**: Toggle large volume, radiative transfer, and zoom simulations

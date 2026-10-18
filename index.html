@@ -38,6 +38,27 @@
                 </div>
 
                 <div class="control-section">
+                    <h3 class="section-header" data-section="search">
+                        <span class="toggle-icon">▼</span>
+                        Search
+                    </h3>
+                    <div class="section-content" id="search-content">
+                        <input type="search" id="sim-search" class="search-input" placeholder="Name, family, author or code…" autocomplete="off" spellcheck="false">
+                        <div id="search-actions" class="search-actions" style="display: none;">
+                            <div class="search-count" id="search-count"></div>
+                            <div class="select-clear-btns">
+                                <button id="search-only" class="clear-btn" title="Plot only the matches">Only these</button>
+                                <button id="search-add" class="clear-btn" title="Add the matches to the plot">Add these</button>
+                                <button id="search-all" class="clear-btn" title="Plot every simulation">Show all</button>
+                            </div>
+                        </div>
+                        <div class="checkbox-group search-results" id="search-results">
+                            <!-- Populated as you type -->
+                        </div>
+                    </div>
+                </div>
+
+                <div class="control-section">
                     <h3 class="section-header" data-section="xaxis">
                         <span class="toggle-icon collapsed">▼</span>
                         X-Axis Units
