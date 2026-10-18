@@ -116,7 +116,8 @@ const simulationFamilies = {
         // Schaye et al. (2010); box sizes in h^-1 Mpc and masses in h^-1 M_sun (h=0.73, WMAP3)
         'OWLS-L100': {code: 'Gadget-3', size: 100/0.73, m_g: 8.66e7/0.73, 'radiative-transfer': false, complete: true, redshift_end: 0.0, periodic: true, year: 2010, month: '', ads: 'https://ui.adsabs.harvard.edu/abs/2010MNRAS.402.1536S', first_author: 'Schaye'},
         'OWLS-L25':  {code: 'Gadget-3', size: 25/0.73,  m_g: 1.35e6/0.73, 'radiative-transfer': false, complete: true, redshift_end: 2.0, periodic: true, year: 2010, month: '', ads: 'https://ui.adsabs.harvard.edu/abs/2010MNRAS.402.1536S', first_author: 'Schaye'},
-        'cosmo-OWLS': {size: 400/0.6777, m_g: 8.12e8/0.6777, m_dm: 4.44e9/0.6777, n_g_part: 1024, n_dm_part: 1024, code: 'Gadget-3', 'radiative-transfer': false, complete: true, redshift_end: 0.0, periodic: true, year: 2014, month: '', ads: 'https://arxiv.org/abs/1312.5462', first_author: 'Le Brun'} // Le Brun et al.; Planck-cosmology values (WMAP7 variants 7.54e8 / 3.75e9 h^-1 Msun)
+        'cosmo-OWLS': {size: 400/0.6777, m_g: 8.12e8/0.6777, m_dm: 4.44e9/0.6777, n_g_part: 1024, n_dm_part: 1024, code: 'Gadget-3', 'radiative-transfer': false, complete: true, redshift_end: 0.0, periodic: true, year: 2014, month: '', ads: 'https://arxiv.org/abs/1312.5462', first_author: 'Le Brun'}, // Le Brun et al.; Planck-cosmology values (WMAP7 variants 7.54e8 / 3.75e9 h^-1 Msun)
+        'cosmo-OWLS-L200': {size: 200/0.704, m_g: 9.41e7/0.704, m_dm: 4.68e8/0.704, n_g_part: 1024, n_dm_part: 1024, code: 'Gadget-3', 'radiative-transfer': false, complete: true, redshift_end: 0.0, periodic: true, year: 2014, month: 'June', ads: 'https://ui.adsabs.harvard.edu/abs/2014MNRAS.440.2997V', first_author: 'van Daalen'} // van Daalen et al.; OWLS REF and AGN models (plus DMONLY) on shared ICs; WMAP7, masses in h^-1 Msun converted with h=0.704
     },
     'Romulus': {
         // Tremmel et al. (2017); masses in M_sun
