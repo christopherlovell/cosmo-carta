@@ -358,6 +358,13 @@ const simulationFamilies = {
         'Aurora-L050N0512': {size: 50/0.71,   m_g: 1.63e7, m_dm: 8.2e7,  n_g_part: 512,  n_dm_part: 512,  code: 'Gadget-3', 'radiative-transfer': true, complete: true, redshift_end: 6.0, periodic: true, year: 2017, month: 'April', ads: 'https://ui.adsabs.harvard.edu/abs/2017MNRAS.466..960P', first_author: 'Pawlik'},
         'Aurora-L100N1024': {size: 100/0.71,  m_g: 1.63e7, m_dm: 8.2e7,  n_g_part: 1024, n_dm_part: 1024, code: 'Gadget-3', 'radiative-transfer': true, complete: true, redshift_end: 8.4, periodic: true, year: 2017, month: 'April', ads: 'https://ui.adsabs.harvard.edu/abs/2017MNRAS.466..960P', first_author: 'Pawlik'}
     },
+    'FiBY': {
+        // First Billion Years; OWLS-based Gadget with Pop III star formation and H2/HD chemistry; boxes in cMpc (h=0.71, WMAP7).
+        // L/XL particle counts unpublished: m_g from Cullen et al. 2017 (log 4.81, 5.68), m_dm scaled by Omega_dm/Omega_b
+        'FiBY_S':  {size: 4,  m_g: 1.25e3, m_dm: 6.16e3, n_g_part: 684, n_dm_part: 684, code: 'Gadget-3', 'radiative-transfer': false, complete: true, redshift_end: 6.0, periodic: true, year: 2013, month: 'January', ads: 'https://ui.adsabs.harvard.edu/abs/2013MNRAS.428.1857J', first_author: 'Johnson'}, // Johnson, Dalla Vecchia & Khochfar; run with and without local Lyman-Werner feedback, plus a DMO twin
+        'FiBY_L':  {size: 16, m_g: 6.5e4, m_dm: 6.5e4*0.2202/0.0448, code: 'Gadget-3', 'radiative-transfer': false, complete: true, redshift_end: 5.0, periodic: true, year: 2017, month: 'September', ads: 'https://ui.adsabs.harvard.edu/abs/2017MNRAS.470.3006C', first_author: 'Cullen'},
+        'FiBY_XL': {size: 32, m_g: 4.8e5, m_dm: 4.8e5*0.2202/0.0448, code: 'Gadget-3', 'radiative-transfer': false, complete: true, redshift_end: 5.0, periodic: true, year: 2017, month: 'September', ads: 'https://ui.adsabs.harvard.edu/abs/2017MNRAS.470.3006C', first_author: 'Cullen'}
+    },
     'Cosmic Dawn': {
         // Ocvirk et al.; RAMSES-CUDATON fully coupled RT on a uniform grid in a 64 h^-1 Mpc box (h=0.6777). No AMR, so m_g is the mean baryon mass per cell
         'CoDa-I':   {size: 64/0.6777, m_g: 3.49e5*0.048/0.26, m_dm: 3.49e5, n_g_part: 4096, n_dm_part: 4096, code: 'RAMSES', 'radiative-transfer': true, complete: true, redshift_end: 4.23, periodic: true, year: 2016, month: 'December', ads: 'https://ui.adsabs.harvard.edu/abs/2016MNRAS.463.1462O', first_author: 'Ocvirk'},
